@@ -24,3 +24,4 @@ def calcScore():
         elif q == 1:
             whiteScore = whiteScore + 1
     score = [blackScore, whiteScore]
+    

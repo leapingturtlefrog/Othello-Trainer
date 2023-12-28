@@ -59,6 +59,8 @@ def calcScore():
     #calculate current score, but do not display it
     #input: none, output: sum of pieces on board, changed: score variable
     
+    global score
+    
     blackScore = 0
     whiteScore = 0
     for q in board:
@@ -66,7 +68,6 @@ def calcScore():
             blackScore += 1
         elif q == 1:
             whiteScore += 1
-    global score
     score = [blackScore, whiteScore]
     return blackScore + whiteScore
 
@@ -76,12 +77,13 @@ def move(player, squareX, squareY):
     #input: who is making the move, move position, output: score, changed: virtual board
     tempBoard = board
     
-    if player == turn:
+    return squareY * 8 + squareX
+    
+    '''if player == turn:
         m = 0
         
     else:
-        return False
-
+        return False'''
 
 def validMove(player, square):
     #determine if a move is valid
@@ -92,3 +94,19 @@ def validMove(player, square):
 
 
 
+print(board[move('Black', 3, 4)])
+
+board = []
+
+for q in range(64):
+    board.append(q)
+
+print(board)
+
+
+def test():
+    global some
+    some = 0
+    for q in range(8):
+        for w in range(8):
+            print(board[move('Black', w, q)])

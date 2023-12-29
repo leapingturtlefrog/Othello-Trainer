@@ -32,18 +32,11 @@ virtualBoard = [[2, 2, 2, 2, 2, 2, 2, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2]]
 
 
-boardXLabels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-
-boardYLabels = ['1', '2', '3', '4', '5', '6', '7', '8']
-
-
 #black pieces, white pieces
 score = [2, 2]
 
-
 #moves executed, 0 = game has not started, 60 = game has definitely ended
-move = 0
-
+moves = 0
 
 #who has to make a move
 turn = 'Black'
@@ -97,7 +90,7 @@ def validMove(player, y, x):
     sidesFlipped = 0
     flippedList = []
     
-    piece(player)
+    pieceFunc(player)
     
     if board[y][x] == 2:
         
@@ -355,7 +348,7 @@ def canMove(player):
     return False
 
 
-def piece(player):
+def pieceFunc(player):
     global piece
     global opponentPiece
     
@@ -372,17 +365,33 @@ def move(player, y, x):
     #input player, space, output none, change board, score, possibleMoves
     
     global piece
+    global opponentPiece
+    global turn
+    global moves
     
     validMove(player, y, x)
     
     board[y][x] = piece
     for q in range(len(flippedList)):
         board[flippedList[q][0]][flippedList[q][1]] = piece
+    
+    moves += 1
+    calcScore()
+    if canMove('Black') == False or turn == 'Black':
+        turn = 'White'
+        piece = 1
+        opponentPiece = 0
+    else:
+        turn = 'Black'
+        piece = 0
+        opponentPiece = 1
 
 
 def printBoard():
     
-    text = '    a   b   c   d   e   f   g   h\n'
+    calcScore
+    
+    text = f'       Black  White\nScore: {score[0]}      {score[1]}\n\n    a   b   c   d   e   f   g   h\n'
     
     for q in range(8):
         text += str(q+1) + ' |'
@@ -402,8 +411,50 @@ def printBoard():
     print(text)
 
 
-move('Black', 4, 2)
+print('''
+      Start game in console! Human vs human currently supported.
+      
+      Layout:
+      B: Black disk
+      W: White disk
+      -: Blank Square
+      
+      Controls:
+      When prompted, input a valid square through a lowercase letter and then a number with no spaces (ie. 'a4')
+      
+      Input 'exit' to stop
+      
+      Have fun!
+      ''')
 printBoard()
+
+breaker = False
+userInput = ''
+
+while breaker == False:
+    userInput = input('Input square:')
+    userInput = str(userInput).strip()
+    print(userInput)
+    
+    t = ord(str(userInput[0].lower())) - 97
+    
+    if userInput == 'exit':
+        breaker = True
+        print('You have exited the game. Thank you for playing!')
+        break
+    elif t < 0 or t > 7 or userInput[0].isalpha() == False or userInput[1].isnumeric() == False or int(userInput[1]) > 8 or int(userInput[1]) < 1 or len(userInput) != 2:
+        print('Invalid input. Please try again with the format letter + number on a valid square (a-h and 1-8, inclusive). ie. \'a4\'')
+    else:
+        userInput = [int(userInput[1]) - 1, t]
+        print(userInput)
+        
+        if validMove(turn, userInput[0], userInput[1]) == True:
+            move(turn, userInput[0], userInput[1])
+            printBoard()
+            
+        else:
+            print('Choose a valid move position.')
+
 
 
 '''Main'''

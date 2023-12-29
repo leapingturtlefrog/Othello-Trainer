@@ -49,10 +49,10 @@ move = 0
 turn = 'Black'
 
 #what piece is being played
-piece = 0
+#piece = 0
 
 #the opponent's piece to be flipped
-opponentPiece = 1
+#opponentPiece = 1
 
 #disks to be flipped
 flippedList = []
@@ -86,16 +86,6 @@ def calcScore():
     return score[0] + score[1]
 
 
-board = [[2, 2, 2, 2, 2, 2, 2, 2],
-         [2, 2, 0, 2, 2, 2, 2, 2],
-         [0, 2, 1, 2, 0, 2, 2, 2],
-         [2, 2, 2, 1, 1, 2, 1, 0],
-         [0, 2, 2, 2, 1, 1, 0, 2],
-         [2, 2, 2, 2, 2, 2, 2, 2],
-         [0, 2, 0, 2, 1, 2, 2, 2],
-         [2, 2, 2, 2, 2, 0, 2, 2]]
-
-
 def validMove(player, y, x):
     #determine if a move is valid and the disks that would move
     #input: who is making move, move position, output: bool, changed: flippedList changed
@@ -105,8 +95,14 @@ def validMove(player, y, x):
     sidesFlipped = 0
     flippedList = []
     
+    if player == 'Black':
+        piece = 0
+        opponentPiece = 1
+    else:
+        piece = 1
+        opponentPiece = 0
     
-    if player == turn and board[y][x] == 2:
+    if board[y][x] == 2:
         
         #check right
         flipped = 0
@@ -334,13 +330,10 @@ def validMove(player, y, x):
     return False
 
 
-print(validMove('Black', 4, 2))
-print(flippedList)
-
-
 def movePositions():
-    #determine if a player can make a move and which positions they can move
-    #input: none, output, change: none
+    #update moves that each player can make
+    #input: none, output: none, change: blackPossibleMoves and whitePossibleMoves
+    
     global blackPossibleMoves
     global whitePossibleMoves
     global flippedList
@@ -355,9 +348,9 @@ def movePositions():
     
     for q in range(8):
         for w in range(8):
-            if validMove('WHite', q, w) == True:
+            if validMove('White', q, w) == True:
                 whitePossibleMoves.append([q, w])
-    
+
     flippedList = []
 
 

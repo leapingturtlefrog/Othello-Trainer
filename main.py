@@ -49,10 +49,10 @@ move = 0
 turn = 'Black'
 
 #what piece is being played
-#piece = 0
+piece = 0
 
 #the opponent's piece to be flipped
-#opponentPiece = 1
+opponentPiece = 1
 
 #disks to be flipped
 flippedList = []
@@ -91,16 +91,13 @@ def validMove(player, y, x):
     #input: who is making move, move position, output: bool, changed: flippedList changed
     
     global flippedList
+    global piece
+    global opponentPiece
     
     sidesFlipped = 0
     flippedList = []
     
-    if player == 'Black':
-        piece = 0
-        opponentPiece = 1
-    else:
-        piece = 1
-        opponentPiece = 0
+    piece(player)
     
     if board[y][x] == 2:
         
@@ -366,12 +363,61 @@ def canMove(player):
     return False
 
 
-def move():
+def piece(player):
+    global piece
+    global opponentPiece
+    
+    if player == 'Black':
+        piece = 0
+        opponentPiece = 1
+    else:
+        piece = 1
+        opponentPiece = 0
+
+
+def move(player, y, x):
     #change disks on the board and change turns, update data
     #input player, space, output none, change board, score, possibleMoves
     
-    m = 0
+    global piece
+    
+    validMove(player, y, x)
+    
+    for q in range(len(flippedList)):
+        board[flippedList[q][0]][flippedList[q][1]] = piece
+    
+    #call dentist
+    #call Robinhood, other broker
+    #stocks
+    #MIT app
+    #essay
+    #table parts, order
 
+
+def printBoard():
+    
+    text = '    a   b   c   d   e   f   g   h\n'
+    
+    for q in range(8):
+        text += str(q+1) + ' |'
+        
+        for w in range(8):
+            if board[q][w] == 2:
+                text += ' - |'
+                
+            elif board[q][w] == 0:
+                text += ' B |'
+                
+            else:
+                text += ' W |'
+                
+        text += '\n'
+    
+    print(text)
+
+
+move('Black', 5, 3)
+printBoard()
 
 
 '''Main'''

@@ -8,6 +8,12 @@
 
 
 
+'''Change this value to True to play in the console!'''
+consoleGame = False
+'''Change this value to True to play in the console!'''
+#Or in the app click on play in console
+
+
 #empty square: 2
 #white piece: 1
 #black piece: 0
@@ -398,7 +404,7 @@ def printBoard():
         
         for w in range(8):
             if board[q][w] == 2:
-                text += ' - |'
+                text += ' . |'
                 
             elif board[q][w] == 0:
                 text += ' B |'
@@ -417,7 +423,7 @@ print('''
       Layout:
       B: Black disk
       W: White disk
-      -: Blank Square
+      .: Blank Square
       
       Controls:
       When prompted, input a valid square through a lowercase letter and then a number with no spaces (ie. 'a4')
@@ -428,32 +434,32 @@ print('''
       ''')
 printBoard()
 
-breaker = False
-userInput = ''
+if consoleGame == True:
+    
+    breaker = False
+    userInput = ''
 
-while breaker == False:
-    userInput = input('Input square:')
-    userInput = str(userInput).strip()
-    print(userInput)
-    
-    t = ord(str(userInput[0].lower())) - 97
-    
-    if userInput == 'exit':
-        breaker = True
-        print('You have exited the game. Thank you for playing!')
-        break
-    elif t < 0 or t > 7 or userInput[0].isalpha() == False or userInput[1].isnumeric() == False or int(userInput[1]) > 8 or int(userInput[1]) < 1 or len(userInput) != 2:
-        print('Invalid input. Please try again with the format letter + number on a valid square (a-h and 1-8, inclusive). ie. \'a4\'')
-    else:
-        userInput = [int(userInput[1]) - 1, t]
-        print(userInput)
+    while breaker == False:
+        userInput = input('Input square:')
+        userInput = str(userInput).strip()
         
-        if validMove(turn, userInput[0], userInput[1]) == True:
-            move(turn, userInput[0], userInput[1])
-            printBoard()
-            
+        t = ord(str(userInput[0].lower())) - 97
+        
+        if userInput == 'exit':
+            breaker = True
+            print('You have exited the game. Thank you for playing!')
+            break
+        elif t < 0 or t > 7 or userInput[0].isalpha() == False or userInput[1].isnumeric() == False or int(userInput[1]) > 8 or int(userInput[1]) < 1 or len(userInput) != 2:
+            print('Invalid input. Please try again with the format letter + number on a valid square (a-h and 1-8, inclusive). ie. \'a4\'')
         else:
-            print('Choose a valid move position.')
+            userInput = [int(userInput[1]) - 1, t]
+            
+            if validMove(turn, userInput[0], userInput[1]) == True:
+                move(turn, userInput[0], userInput[1])
+                printBoard()
+                
+            else:
+                print('Choose a valid move position.')
 
 
 

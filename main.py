@@ -417,7 +417,9 @@ def printBoard():
     print(text)
 
 
-print('''
+if consoleGame == True:
+    
+    print('''
       Start game in console! Human vs human currently supported.
       
       Layout:
@@ -432,10 +434,9 @@ print('''
       
       Have fun!
       ''')
-printBoard()
+    printBoard()
 
-if consoleGame == True:
-    
+
     breaker = False
     userInput = ''
 

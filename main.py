@@ -340,7 +340,6 @@ print(flippedList)
 
 
 m = 0
-m = 0
 
 
 

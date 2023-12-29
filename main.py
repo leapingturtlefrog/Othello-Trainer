@@ -417,7 +417,60 @@ printBoard()
 
 
 
-m = 0
+import sys
+from PyQt6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout
+)
+
+
+class MainWindow(QWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # set the window title
+        self.setWindowTitle('Othello Study Trainer')
+
+        # create a button widget and connect its clicked signal
+        # to a method
+        button = QPushButton('Start Game')
+        button.clicked.connect(self.buttonClicked)
+        
+        label = QLabel()
+        lineEdit = QLineEdit()
+        lineEdit.textChanged.connect(label.setText)
+
+
+        # place the button on window using a vertical box layout
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        layout.addWidget(button)
+        layout.addWidget(label)
+        layout.addWidget(line_edit)
+        
+        # show the window
+        self.show()
+
+    def buttonClicked(self):
+        print('clicked')
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+
+    # create the main window and display it
+    window = MainWindow()
+
+    # start the event loop
+    sys.exit(app.exec())
+
+
+#sender_object.signal_name.connect(receiver_object.slot_name)
 
 
 

@@ -378,13 +378,6 @@ def move(player, y, x):
     board[y][x] = piece
     for q in range(len(flippedList)):
         board[flippedList[q][0]][flippedList[q][1]] = piece
-    
-    #call dentist
-    #call Robinhood, other broker
-    #stocks
-    #MIT app
-    #essay
-    #table parts, order
 
 
 def printBoard():
@@ -451,7 +444,7 @@ class MainWindow(QWidget):
 
         layout.addWidget(button)
         layout.addWidget(label)
-        layout.addWidget(line_edit)
+        layout.addWidget(lineEdit)
         
         # show the window
         self.show()
@@ -471,40 +464,3 @@ if __name__ == '__main__':
 
 
 #sender_object.signal_name.connect(receiver_object.slot_name)
-
-
-
-'''Tests and Old Code'''
-
-
-
-'''def position(squareX, squareY):
-    #return move position on board
-    #input: squareX and squareY, output: board position in list
-
-    return squareY * 8 + squareX
-
-
-def move(player, squareX, squareY):
-    #make a move on the board and check result
-    #input: who is making the move, move position, output: score, changed: virtual board
-    tempBoard = board
-        
-
-
-print(board[move('Black', 3, 4)])
-
-board = []
-
-for q in range(64):
-    board.append(q)
-
-print(board)
-
-def test():
-    global some
-    some = 0
-    for q in range(8):
-        for w in range(8):
-            print(board[move('Black', w, q)])
-test()'''

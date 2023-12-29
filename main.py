@@ -368,6 +368,8 @@ def canMove(player):
 
 def move():
     #change disks on the board and change turns, update data
+    #input player, space, output none, change board, score, possibleMoves
+    
     m = 0
 
 

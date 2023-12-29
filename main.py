@@ -57,13 +57,18 @@ opponentPiece = 1
 #disks to be flipped
 flippedList = []
 
+#positions where black can move
+blackPossibleMoves = []
+
+#positions where white can move
+whitePossibleMoves = []
+
 
 
 '''Functions'''
 
 
 
-#checked
 def calcScore():
     #calculate current score, but do not display it
     #input: none, output: sum of pieces on board, changed: score variable
@@ -90,11 +95,10 @@ board = [[2, 2, 2, 2, 2, 2, 2, 2],
          [0, 2, 0, 2, 1, 2, 2, 2],
          [2, 2, 2, 2, 2, 0, 2, 2]]
 
-#right turn, flip at least 1 opponent disk (empty square, check all directions)
 
-def move(player, y, x):
-    #determine if a move is valid
-    #input: who is making move, move position, output: bool, changed: none
+def validMove(player, y, x):
+    #determine if a move is valid and the disks that would move
+    #input: who is making move, move position, output: bool, changed: flippedList changed
     
     global flippedList
     
@@ -330,8 +334,48 @@ def move(player, y, x):
     return False
 
 
-print(move('Black', 4, 2))
+print(validMove('Black', 4, 2))
 print(flippedList)
+
+
+def movePositions():
+    #determine if a player can make a move and which positions they can move
+    #input: none, output, change: none
+    global blackPossibleMoves
+    global whitePossibleMoves
+    global flippedList
+    
+    blackPossibleMoves = []
+    whitePossibleMoves = []
+    
+    for q in range(8):
+        for w in range(8):
+            if validMove('Black', q, w) == True:
+                blackPossibleMoves.append([q, w])
+    
+    for q in range(8):
+        for w in range(8):
+            if validMove('WHite', q, w) == True:
+                whitePossibleMoves.append([q, w])
+    
+    flippedList = []
+
+
+def canMove(player):
+    #determine if a player can make a move
+    #input: player, output: bool, change: none
+    
+    movePositions()
+    if len(blackPossibleMoves) != 0 and player == 'Black':
+        return True
+    elif len(whitePossibleMoves) != 0 and player == 'White':
+        return True
+    return False
+
+
+def move():
+    #change disks on the board and change turns, update data
+    m = 0
 
 
 

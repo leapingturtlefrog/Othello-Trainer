@@ -123,8 +123,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
         
         
@@ -150,8 +149,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
         
         
@@ -177,8 +175,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
         
         
@@ -204,8 +201,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
         
         
@@ -232,8 +228,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
         
         
@@ -260,8 +255,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
         
         
@@ -288,8 +282,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
         
         
@@ -316,8 +309,7 @@ def validMove(player, y, x):
                 
                 else:
                     sidesFlipped += 1
-                    for w in tempFlippedList:
-                        flippedList.append(w)
+                    flippedList.extend(tempFlippedList)
                     break
 
 
@@ -383,6 +375,7 @@ def move(player, y, x):
     
     validMove(player, y, x)
     
+    board[y][x] = piece
     for q in range(len(flippedList)):
         board[flippedList[q][0]][flippedList[q][1]] = piece
     
@@ -416,7 +409,7 @@ def printBoard():
     print(text)
 
 
-move('Black', 5, 3)
+move('Black', 4, 2)
 printBoard()
 
 

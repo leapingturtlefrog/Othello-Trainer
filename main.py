@@ -417,6 +417,7 @@ def printBoard():
     print(text)
 
 
+#To play in console, change this value at the top to True
 if consoleGame == True:
     
     print('''

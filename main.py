@@ -11,6 +11,8 @@
 '''Change this value to True to play in the console!'''
 consoleGame = False
 '''Change this value to True to play in the console!'''
+
+version = '2.11'
 #Or in the app click on play in console
 
 
@@ -397,7 +399,7 @@ def printBoard():
     
     calcScore
     
-    text = f'       Black  White\nScore: {score[0]}      {score[1]}\n\n    a   b   c   d   e   f   g   h\n'
+    text = f'       Black  White\nScore: {score[0]}      {score[1]}        Turn: {turn}\n\n    a   b   c   d   e   f   g   h\n'
     
     for q in range(8):
         text += str(q+1) + ' |'
@@ -416,12 +418,11 @@ def printBoard():
     
     print(text)
 
-
 #To play in console, change this value at the top to True
 if consoleGame == True:
     
-    print('''
-      Start game in console! Human vs human currently supported.
+    print(f'''
+      Start game in console! Human vs human currently supported. Version {version}.
       
       Layout:
       B: Black disk
@@ -485,7 +486,7 @@ class MainWindow(QWidget):
         super().__init__(*args, **kwargs)
 
         # set the window title
-        self.setWindowTitle('Othello Study Trainer')
+        self.setWindowTitle('Othello Trainer')
 
         # create a button widget and connect its clicked signal
         # to a method

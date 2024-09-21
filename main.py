@@ -1,20 +1,11 @@
-#Play
-#AI
-#create puzzles
+'''Variables'''
 
 
 
-'''Start variables'''
-
-
-
-'''Change this value to True to play in the console!'''
-consoleGame = False
-'''Change this value to True to play in the console!'''
-
-version = '2.11'
-#Or in the app click on play in console
-
+version = '0.30'
+prevVersion = '0.20'
+lastUpdate = '09/21/2024'
+lastUpdateFormat = 'mm/dd/yyyy'
 
 #empty square: 2
 #white piece: 1
@@ -28,7 +19,6 @@ board = [[2, 2, 2, 2, 2, 2, 2, 2],
         [2, 2, 2, 2, 2, 2, 2, 2],
         [2, 2, 2, 2, 2, 2, 2, 2]]
 
-
 #used in determining move trees
 virtualBoard = [[2, 2, 2, 2, 2, 2, 2, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2],
@@ -38,7 +28,6 @@ virtualBoard = [[2, 2, 2, 2, 2, 2, 2, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2]]
-
 
 #black pieces, white pieces
 score = [2, 2]
@@ -64,6 +53,10 @@ blackPossibleMoves = []
 #positions where white can move
 whitePossibleMoves = []
 
+#number of additional lines to remove in the console
+#when displaying the board
+linesToRemove = 0
+
 
 
 '''Functions'''
@@ -74,7 +67,7 @@ def calcScore():
     #calculate current score, but do not display it
     #input: none, output: sum of pieces on board, changed: score variable
     
-    global score
+    global score #I know, not good to use global variables...
     blackScore = 0
     whiteScore = 0
     
@@ -91,6 +84,7 @@ def validMove(player, y, x):
     #determine if a move is valid and the disks that would move
     #input: who is making move, move position, output: bool, changed: flippedList changed
     
+    #terrible global variables habits again
     global flippedList
     global piece
     global opponentPiece
@@ -395,9 +389,19 @@ def move(player, y, x):
         opponentPiece = 1
 
 
+firstBoardOut = True
+
+
+def clear_line(n):
+    LINE_UP = '\033[1A'
+    LINE_CLEAR = '\x1b[2K'
+    for i in range(n):
+        print(LINE_UP, end=LINE_CLEAR)
+
+
 def printBoard():
     
-    calcScore
+    calcScore()
     
     text = f'       Black  White\nScore: {score[0]}      {score[1]}        Turn: {turn}\n\n    a   b   c   d   e   f   g   h\n'
     
@@ -416,13 +420,20 @@ def printBoard():
                 
         text += '\n'
     
+    global firstBoardOut
+    if not firstBoardOut:
+        clear_line(14 + linesToRemove)
     print(text)
+    firstBoardOut = False
 
-#To play in console, change this value at the top to True
-if consoleGame == True:
-    
-    print(f'''
-      Start game in console! Human vs human currently supported. Version {version}.
+
+
+'''Game'''
+
+
+
+print(f'''
+      Game started in console! Human vs human currently supported. Version {version}.
       
       Layout:
       B: Black disk
@@ -432,18 +443,18 @@ if consoleGame == True:
       Controls:
       When prompted, input a valid square through a lowercase letter and then a number with no spaces (ie. 'a4')
       
-      Input 'exit' to stop
+      Input 'exit' to close or press the 'x' in the top right of the console
       
       Have fun!
       ''')
-    printBoard()
+printBoard()
 
+breaker = False
+userInput = ''
 
-    breaker = False
-    userInput = ''
-
-    while breaker == False:
-        userInput = input('Input square:')
+while breaker == False:
+    userInput = input('Input square:')
+    try:
         userInput = str(userInput).strip()
         
         t = ord(str(userInput[0].lower())) - 97
@@ -454,73 +465,18 @@ if consoleGame == True:
             break
         elif t < 0 or t > 7 or userInput[0].isalpha() == False or userInput[1].isnumeric() == False or int(userInput[1]) > 8 or int(userInput[1]) < 1 or len(userInput) != 2:
             print('Invalid input. Please try again with the format letter + number on a valid square (a-h and 1-8, inclusive). ie. \'a4\'')
+            linesToRemove += 2
         else:
             userInput = [int(userInput[1]) - 1, t]
             
             if validMove(turn, userInput[0], userInput[1]) == True:
                 move(turn, userInput[0], userInput[1])
                 printBoard()
+                linesToRemove = 0
                 
             else:
                 print('Choose a valid move position.')
-
-
-
-'''Main'''
-
-
-
-import sys
-from PyQt6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QVBoxLayout
-)
-
-
-class MainWindow(QWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # set the window title
-        self.setWindowTitle('Othello Trainer')
-
-        # create a button widget and connect its clicked signal
-        # to a method
-        button = QPushButton('Start Game')
-        button.clicked.connect(self.buttonClicked)
-        
-        label = QLabel()
-        lineEdit = QLineEdit()
-        lineEdit.textChanged.connect(label.setText)
-
-
-        # place the button on window using a vertical box layout
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-
-        layout.addWidget(button)
-        layout.addWidget(label)
-        layout.addWidget(lineEdit)
-        
-        # show the window
-        self.show()
-
-    def buttonClicked(self):
-        print('clicked')
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    # create the main window and display it
-    window = MainWindow()
-
-    # start the event loop
-    sys.exit(app.exec())
-
-
-#sender_object.signal_name.connect(receiver_object.slot_name)
+                linesToRemove += 2
+    except:
+        print('Invalid input. Please try again with the format letter + number on a valid square (a-h and 1-8, inclusive). ie. \'a4\'')
+        linesToRemove += 2

@@ -1,4 +1,4 @@
-**Othello Game**
+**Othello Trainer Game**
 
 This is a small Othello game I made a bit ago for play in the console when learning python.
 <br><br>

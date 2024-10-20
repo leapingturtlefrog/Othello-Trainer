@@ -1,7 +1,11 @@
 **Othello Trainer Game**
 
-This is a small Othello game I made a bit ago for play in the console when learning Python.
+This is a console implementation of the game Othello.
 <br><br>
-I have plans in the future to make it much better (maybe in Java) and use better code practices.
+Originally I made it while learning Python (and used very poor coding practices and only functional programming). I have plans to use Numpy and Pandas to make a much better version.
 <br><br>
-For now, you can download the highest versioned executable for Windows or "main.py" for other operating systems and use the `py main.py` command to run in the directory "main.py" is downloaded to with Python properly installed.
+I more recently made an implementation of it in Java using bitboards to represent the game state (all 64 squares are represented in only two 64-bit integers) which was challenging and really interesting to build around.
+<br><br>
+For Java, there is a JAR file in as well as the original java files in [/java/othelloJar](/java/othelloJar).
+<br>
+For Python, I used auto-py-to-exe/PyInstaller to bundle the program into an executable at [/python](/python), there is also the python file `main.py` in the same directory.

@@ -2,6 +2,7 @@ package othellotrainer;
 
 import java.util.Scanner;
 
+
 public class ConsoleGame {
     Board board;
 
@@ -20,7 +21,10 @@ public class ConsoleGame {
         System.out.print("Input square: ");
         String inputString = input.nextLine().strip().toLowerCase();
         while (!inputString.equals("exit")) {
-            if (inputString.length() != 2) {
+            if (inputString.length() == 1 && inputString.startsWith("r")) {
+                String success = board.randomMove(board.getActivePlayer());
+                System.out.println(board.toPrint() + "\n" + success);
+            } else if (inputString.length() != 2) {
                 printInvalidInput();
             } else {
                 try {
@@ -40,8 +44,7 @@ public class ConsoleGame {
                 }
             }
 
-            if (board.getMove() > 59
-                    || (board.moveableSquares(0) == 0L && board.moveableSquares(1) == 0L)) {
+            if (board.moveableSquares(0) == 0L && board.moveableSquares(1) == 0L) {
                 System.out.println("Game ended! Final score: " + board.getScore()[0] + " to " + board.getScore()[1]);
                 if (board.getWinner().equals("Black")) {
                     System.out.println("Black won.");
@@ -70,6 +73,7 @@ Game started in console! Human vs human currently supported.
      
       Controls:
       When prompted, input a valid square through a lowercase letter and then a number with no spaces (ie. 'a4').
+      Or enter 'r' for a random selection.
      
       Input 'exit' or press the 'x' in the top right of the console to close.
      

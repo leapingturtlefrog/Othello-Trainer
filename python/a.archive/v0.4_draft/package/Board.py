@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-class othellotrainer.Board:
+class src.othellotrainer.Board:
     '''Contains the board, positions, and history for a given board'''
     
     def __init__(self):

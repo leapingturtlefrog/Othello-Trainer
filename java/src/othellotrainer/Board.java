@@ -1,4 +1,4 @@
-package othellotrainer;
+package src.othellotrainer;
 
 import java.util.Random;
 import java.util.ArrayList;
@@ -157,9 +157,9 @@ public class Board {
             if (i % 8 == 0) {
                 output.append("\n").append(i / 8 + 1).append(" |");
             }
-            if ((black >>> i) % 2 == 1) {
+            if (Math.abs((black >>> i)) % 2 == 1) {
                 output.append(" B |");
-            } else if ((white >>> i) % 2 == 1) {
+            } else if (Math.abs((white >>> i)) % 2 == 1) {
                 output.append(" W |");
             } else {
                 output.append(" . |");
@@ -179,7 +179,7 @@ public class Board {
                 if (col * row != 49) {
                     black += (long) Math.pow(2, 8 * row + col);
                 } else {
-                    white += (long) -Math.pow(2, 63);
+                    black += (long) -Math.pow(2, 63);
                 }
                 score[0] += 1;
             } else if (player == 1) {
@@ -292,7 +292,7 @@ public class Board {
         return score;
     }
 
-    String randomMove(int player) {
+    boolean randomMove(int player) {
         long moveableSquares = moveableSquares(player);
         if (moveableSquares != 0L) {
             ArrayList<Integer> moveableSquaresList = new ArrayList<Integer>();
@@ -304,13 +304,12 @@ public class Board {
             int len = moveableSquaresList.size();
             if (len > 0) {
                 pos = moveableSquaresList.get(random.nextInt(len));
-                return "Moving at c" + pos % 8 + ", r" + pos / 8 + " returned "
-                        + move(player, pos % 8, pos / 8) + ".";
+                return move(player, pos % 8, pos / 8);
             } else {
-                return "moveableSquaresList is empty.";
+                return false;
             }
         } else {
-            return "MoveableSquares returned 0L.";
+            return false;
         }
     }
 } // Board

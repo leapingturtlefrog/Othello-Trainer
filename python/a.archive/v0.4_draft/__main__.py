@@ -1,7 +1,7 @@
-from package import othellotrainer.Board
+from package import src.othellotrainer.Board
 
 if __name__ == "__main__":
-    board = othellotrainer.Board()
+    board = src.othellotrainer.Board()
 
     print(board.get_board().itemsize)
     

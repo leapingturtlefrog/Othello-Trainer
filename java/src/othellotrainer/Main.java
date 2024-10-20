@@ -1,7 +1,7 @@
-package othellotrainer;
+package src.othellotrainer;
 
 
-public class OthelloTrainer {
+public class Main {
     private static boolean consoleGame = true;
 
     public static void main(String[] args) {

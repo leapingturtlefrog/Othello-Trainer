@@ -1,11 +1,11 @@
+# NOTE: I made this while learning python, so it does not have good code practices
+
 '''Variables'''
 
 
 
 version = '0.30'
 prevVersion = '0.20'
-lastUpdate = '09/21/2024'
-lastUpdateFormat = 'mm/dd/yyyy'
 
 #empty square: 2
 #white piece: 1
@@ -84,7 +84,7 @@ def validMove(player, y, x):
     #determine if a move is valid and the disks that would move
     #input: who is making move, move position, output: bool, changed: flippedList changed
     
-    #terrible global variables habits again
+    #terrible use of global variables again
     global flippedList
     global piece
     global opponentPiece

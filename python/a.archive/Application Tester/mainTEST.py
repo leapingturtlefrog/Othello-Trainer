@@ -490,7 +490,7 @@ class MainWindow(QWidget):
 
         # create a button widget and connect its clicked signal
         # to a method
-        button = QPushButton('Start othellotrainer.Game')
+        button = QPushButton('Start src.othellotrainer.Game')
         button.clicked.connect(self.buttonClicked)
         
         label = QLabel()

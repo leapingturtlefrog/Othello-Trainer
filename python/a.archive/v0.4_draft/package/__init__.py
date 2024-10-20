@@ -1,1 +1,1 @@
-from .othellotrainer.Board import othellotrainer.Board
+from .src.othellotrainer.Board import src.othellotrainer.Board

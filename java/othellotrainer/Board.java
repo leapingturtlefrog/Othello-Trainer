@@ -8,29 +8,32 @@ interface searchFunction {
 public class Board {
     // Black pieces packed as a bitboard
     // A bit of 0 represents not present, 1 present, going along columns and then rows
-    long black;
+    private long black;
     // White pieces packed as a bitboard
     // A bit of 0 represents not present, 1 present, going along columns and then rows
-    long white;
+    private long white;
     // Move order as an array of bytes, going by column and then row, arranged
     // The positive bytes 1-60 inclusive represent the move number of the black player
     // The positive bytes (61-121, inclusive) minus 60 represent the move number of the white player
     // -128 represents the black player starting position
     // -127 represents the white player starting position
     // 0 represents an empty square
-    byte[] moves;
+    private byte[] moves;
     // Number of moves completed
-    byte move;
+    private byte move;
     // The score with black first and then white
-    byte[] score;
+    private byte[] score;
+    // The current active player
+    // 0 is black, 1 is white
+    private int activePlayer;
 
     // Temporary position holder
-    int pos;
+    private int pos;
 
     // Used for determining valid moves by adding these values each time to view another square
-    int[] searchAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
+    private final int[] searchAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
     // Used to ensure position being compared is on the board and is valid
-    searchFunction[] searchFunctionList = new searchFunction[]{
+    private final searchFunction[] searchFunctionList = new searchFunction[]{
             (int tempPos, int pos) -> tempPos / 8 + 1 == pos / 8 && tempPos > -1, // top left
             (int tempPos, int pos) -> tempPos > -1, // up
             (int tempPos, int pos) -> tempPos / 8 != pos / 8 && tempPos > -1, // top right
@@ -41,26 +44,27 @@ public class Board {
             (int tempPos, int pos) -> tempPos / 8 == pos / 8 + 1 && tempPos < 64, // bottom right
     };
 
-    int[][][] easyBoards = new int[][][]{
+    // Nonstandard preset boards for testing. 0 is empty, 1 black, 2 white
+    private final int[][][] EASY_BOARDS = new int[][][]{
             {
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0}
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0}
             },
             {
-                {2, 2, 2, 2, 2, 0, 0, 0},
-                {2, 1, 1, 1, 2, 0, 0, 0},
-                {2, 1, 0, 1, 2, 0, 0, 0},
-                {2, 1, 1, 1, 2, 0, 0, 0},
-                {2, 2, 2, 2, 2, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0}
+                    {2, 2, 2, 2, 2, 0, 0, 0},
+                    {2, 1, 1, 1, 2, 0, 0, 0},
+                    {2, 1, 0, 1, 2, 0, 0, 0},
+                    {2, 1, 1, 1, 2, 0, 0, 0},
+                    {2, 2, 2, 2, 2, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0}
             },
             {
                     {0, 0, 0, 0, 0, 0, 0, 0},
@@ -79,13 +83,23 @@ public class Board {
             black = (long) (Math.pow(2, 28) + Math.pow(2, 35));
             white = (long) (Math.pow(2, 27) + Math.pow(2, 36));
         } else {
-            long[] tempLong = createBoard(easyBoards[boardNumber]);
+            long[] tempLong = createBoard(EASY_BOARDS[boardNumber]);
             black = tempLong[0];
             white = tempLong[1];
         }
-        moves = new byte[]{};
+        moves = new byte[]{
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, -127, -128, 0, 0, 0,
+                0, 0, 0, -128, -127, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+        };
         score = new byte[]{2, 2};
         move = 0;
+        activePlayer = 0;
     }
 
     long[] createBoard(int[][] iboard) {
@@ -126,10 +140,10 @@ public class Board {
     }
 
     String toPrint() {
-        StringBuilder output = new StringBuilder(381);
+        StringBuilder output = new StringBuilder(387);
 
-        output.append(("        Black   White\nScore:  %-2d      %-2d        Move:  %-2d\n\n    a   b   c   d   e   f")
-                .formatted(score[0], score[1], move))
+        output.append(("        Black   White     %1s\nScore:  %-2d      %-2d        Move:  %-2d\n\n    a   b   c   d   e   f")
+                .formatted(getActivePlayer() == 0 ? "B" : "W", score[0], score[1], move))
                 .append("   g   h");
 
         for (int i = 0; i < 64; i++) {
@@ -157,8 +171,10 @@ public class Board {
         if (piecesToFlip != 0) {
             if (player == 0) {
                 black += (long) Math.pow(2, 8 * row + col);
+                score[0] += 1;
             } else if (player == 1) {
                 white += (long) Math.pow(2, 8 * row + col);
+                score[1] += 1;
             }
             for (int i = 0; i < 64; i++) {
                 temp = piecesToFlip >> i;
@@ -167,16 +183,22 @@ public class Board {
                         if (player == 0) {
                             white -= (long) Math.pow(2, i);
                             black += (long) Math.pow(2, i);
+                            score[0] += 1;
+                            score[1] -= 1;
                         } else if (player == 1) {
                             white += (long) Math.pow(2, i);
                             black -= (long) Math.pow(2, i);
+                            score[0] -= 1;
+                            score[1] += 1;
                         }
-                    } else {
-                        System.out.println("wrong " + i);
                     }
                 }
             }
-
+            move += 1;
+            moves[8 * row + col] = player == 0 ? move : (byte) (move + 60);
+            if (moveableSquares(player == 0 ? 1 : 0) != 0L) {
+                activePlayer = player == 0 ? 1 : 0;
+            }
             return true;
         } else {
             return false;
@@ -203,6 +225,7 @@ public class Board {
                         tempDisksToFlip += (long) Math.pow(2, tempPos);
                     } else if ((currPlayer >> tempPos) % 2 == 1) {
                         disksToFlip += tempDisksToFlip;
+                        break;
                     } else {
                         break;
                     }
@@ -214,7 +237,40 @@ public class Board {
 
             return disksToFlip;
         } else {
-            return -1;
+            return 0L;
         }
+    }
+
+    long moveableSquares(int player) {
+        long availableSquares = white + black; //all 0's in the binary representation are empty
+        long moveableSquares = 0L;
+        for (int i = 0; i < 64; i++) {
+            if ((availableSquares >> i) % 2 == 0 && getPiecesToFlip(player, i % 8, i / 8) != 0L) {
+                moveableSquares += (long) Math.pow(2, i);
+            }
+        }
+        return moveableSquares;
+    }
+
+    int getActivePlayer() {
+        return activePlayer;
+    }
+
+    byte getMove() {
+        return move;
+    }
+
+    String getWinner() {
+        if (score[0] > score[1]) {
+            return "Black";
+        } else if (score[1] > score[0]) {
+            return "White";
+        } else {
+            return "Tie";
+        }
+    }
+
+    byte[] getScore() {
+        return score;
     }
 } // Board

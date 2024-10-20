@@ -12,7 +12,7 @@
 consoleGame = True
 '''Change this value to True to play in the console!'''
 
-version = '2.11'
+version = '0.10'
 #Or in the app click on play in console
 
 

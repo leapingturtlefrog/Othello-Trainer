@@ -2,7 +2,7 @@
 
 This is a console implementation of the game Othello.
 <br><br>
-Originally I made it a while back while learning Python (and used very poor coding practices and only functional programming). I have plans to use Numpy and Pandas to make a better version.
+Originally I made it a while back while learning Python (and used very poor coding practices and only procedural programming). I have plans to use Numpy and Pandas to make a better version.
 <br><br>
 I more recently made an implementation of it in Java using bitboards to represent the game state (all 64 squares are represented in only two 64-bit integers) which was challenging and really interesting to build around. For my next interation I will use JavaFX to create a GUI and implement a basic bot to play against.
 <br><br>

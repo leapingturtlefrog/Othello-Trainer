@@ -11,6 +11,8 @@ public class App {
         if (gameInConsole) {
             ConsoleGame consoleGame = new ConsoleGame(new Board());
             consoleGame.run();
+        } else {
+            System.out.println("Non-console game currently unsupported. Under construction.");
         }
     }
 }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  *
  */
 public class Board {
-    // In bits: 0 = not present, 1 = present
+    // In bits: 0 = not present, 1 = present. For empty squares this means 0 = occupied, 1 = empty
     // [Black squares, White squares, empty squares]
     private long[] squares;
     // The squares that disks can be places on for the active player
@@ -18,8 +18,7 @@ public class Board {
     private int move; // Current move number
     private boolean gameOver;
 
-    private int pos; // Used for calculations
-    private final Random random;
+    private final Random random; // Used for making random moves
     // In bits: 0 = not valid, 1 = valid
     // For a given square, the "options" next to the square that are valid
     // Order: top left, top, top right, left, right, bottom left, bottom, bottom right
@@ -74,8 +73,10 @@ public class Board {
             11111111L
     """;
 
+    /**
+     * Standard board setup
+     */
     public Board() {
-        // Standard board setup
         squares = new long[]{
                 0b0000000000000000000000000000100000010000000000000000000000000000L,
                 0b0000000000000000000000000001000000001000000000000000000000000000L,
@@ -101,7 +102,7 @@ public class Board {
             return false;
         } else { // Valid move
             // Update the player's squares, opponent's, and the empty squares
-            squares[player] += disksToFlip + (1L << pos);
+            squares[player] |= disksToFlip | (1L << pos);
             squares[opponent] ^= disksToFlip;
             squares[2] ^= 1L << pos;
 
@@ -118,7 +119,6 @@ public class Board {
 
             if (move == 60) {
                 gameOver = true;
-
             } else {
                 // Update the moveable squares and active player
                 moveableSquares = getMoveableSquares(opponent);
@@ -137,12 +137,15 @@ public class Board {
         }
     }
 
-    public String toConsoleString() {
+    public String getBoardInConsoleString() {
         StringBuilder output = new StringBuilder(387);
 
-        output.append(("        Black   White     %1s\nScore:  %-2d      %-2d        Move:  %-2d\n\n    a   b   c   d   e   f")
-                        .formatted(getActivePlayer() == 0 ? "B" : "W", score[0], score[1], move))
-                .append("   g   h");
+        output.append(("""
+                                Black   White     %1s
+                        Score:  %-2d      %-2d        Move:  %-2d
+                        
+                            a   b   c   d   e   f   g   h""")
+                        .formatted(getActivePlayer() == 0 ? "B" : "W", score[0], score[1], move));
 
         for (int i = 0; i < 64; i++) {
             // Row text
@@ -157,7 +160,6 @@ public class Board {
                 output.append(" W |");
             }
         }
-
         output.append("\n");
 
         return output.toString();
@@ -169,7 +171,7 @@ public class Board {
         if (moveableSquaresTemp == 0) {
             return false;
         } else {
-            ArrayList<Integer> moveableSquaresList = new ArrayList<Integer>();
+            ArrayList<Integer> moveableSquaresList = new ArrayList<>();
 
             for (int i = 0; i < 64; i++) {
                 if ((moveableSquaresTemp & (1L << i)) != 0) {
@@ -186,6 +188,16 @@ public class Board {
         }
     }
 
+    public String getWinnerString() {
+        if (score[0] > score[1]) {
+            return "Black won.";
+        } else if (score[1] > score[0]) {
+            return "White won.";
+        } else {
+            return "Draw.";
+        }
+    }
+
     public boolean isGameOver() { return gameOver; }
 
     public int getActivePlayer() { return activePlayer; }
@@ -194,37 +206,30 @@ public class Board {
 
     public int getWhiteScore() { return score[1]; }
 
-    public String getWinner() {
-        if (score[0] > score[1]) {
-            return "Black";
-        } else if (score[1] > score[0]) {
-            return "White";
-        } else {
-            return "Tie";
-        }
-    }
-
     private long getDisksToFlip(int player, int pos) {
-        int compPos;
+        int currPos;
+        int nextPos;
         long tempDisksToFlip;
         long disksToFlip = 0L;
 
-        if ((squares[2] & (1L << pos)) != 0) {
+        if ((squares[2] & (1L << pos)) != 0) { // If the square is empty so a disk may be placed
             for (int i = 0; i < 8; i++) {
                 tempDisksToFlip = 0L;
-                compPos = pos + compAddList[i];
+                currPos = pos;
+                nextPos = currPos + compAddList[i];
 
-                while ((validNextSquares[compPos] & (1L << i)) != 0) {
-                    if ((squares[2] & (1L << compPos)) != 0) { // Square is empty
+                while ((validNextSquares[currPos] & (1L << i)) != 0) { // While next square is a valid square
+                    if ((squares[2] & (1L << nextPos)) != 0) { // Square is empty
                         break;
-                    } else if ((squares[player] & (1L << compPos)) != 0) { // Current player is on square
-                        disksToFlip += tempDisksToFlip;
+                    } else if ((squares[player] & (1L << nextPos)) != 0) { // Current player is on square
+                        disksToFlip |= tempDisksToFlip;
                         break;
                     } else { // Opponent is on square
-                        tempDisksToFlip |= 1L << compPos;
+                        tempDisksToFlip |= 1L << nextPos;
                     }
 
-                    compPos += compAddList[i];
+                    currPos = nextPos;
+                    nextPos += compAddList[i];
                 }
             }
 
@@ -235,18 +240,20 @@ public class Board {
     }
 
     private boolean canFlipDisks(int player, int pos) {
-        int compPos;
+        int currPos;
+        int nextPos;
         boolean opponentSeen; // Does the opponent have disks on the path being examined?
 
         if ((squares[2] & (1L << pos)) != 0) {
             for (int i = 0; i < 8; i++) {
-                compPos = pos + compAddList[i];
+                currPos = pos;
+                nextPos = currPos + compAddList[i];
                 opponentSeen = false;
 
-                while ((validNextSquares[compPos] & (1L << i)) != 0) {
-                    if ((squares[2] & (1L << compPos)) != 0) { // Square is empty
+                while ((validNextSquares[currPos] & (1L << i)) != 0) { // While next square is a valid square
+                    if ((squares[2] & (1L << nextPos)) != 0) { // Square is empty
                         break;
-                    } else if ((squares[player] & (1L << compPos)) != 0) { // Current player is on square
+                    } else if ((squares[player] & (1L << nextPos)) != 0) { // Current player is on square
                         if (opponentSeen) {
                             return true;
                         } else {
@@ -256,7 +263,8 @@ public class Board {
                         opponentSeen = true;
                     }
 
-                    compPos += compAddList[i];
+                    currPos = nextPos;
+                    nextPos += compAddList[i];
                 }
             }
         }

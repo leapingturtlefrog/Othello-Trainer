@@ -1,12 +1,16 @@
 package othellotrainer;
 
 /**
- * Hello world!
+ *
  *
  */
 public class App {
-    public static void main( String[] args ) {
-        System.out.println( "Hello World! 2" );
+    private static boolean gameInConsole = true;
 
+    public static void main( String[] args ) {
+        if (gameInConsole) {
+            ConsoleGame consoleGame = new ConsoleGame(new Board());
+            consoleGame.run();
+        }
     }
 }

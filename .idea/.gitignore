@@ -9,5 +9,5 @@
 
 # Added ignore files
 target/
-*.class
-Notes.java
+~/*.class
+~/Notes.java

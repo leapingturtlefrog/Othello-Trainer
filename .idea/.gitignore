@@ -10,3 +10,4 @@
 # Added ignore files
 target/
 *.class
+Notes.java

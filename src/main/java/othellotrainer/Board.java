@@ -21,57 +21,33 @@ public class Board {
     private final Random random; // Used for making random moves
     // In bits: 0 = not valid, 1 = valid
     // For a given square, the "options" next to the square that are valid
-    // Order: top left, top, top right, left, right, bottom left, bottom, bottom right
+    // Bit order (LSB to MSB): top left, top, top right, left, right, bottom left, bottom, bottom right
     private final byte[] validNextSquares = new byte[]{
-            (byte) 0b00001011, (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00011111,
-            (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00010110,
+            (byte) 0b11010000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000,
+            (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b01101000,
 
-            (byte) 0b01101011, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
-            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11010110,
+            (byte) 0b11010110, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
+            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b01101011,
 
-            (byte) 0b01101011, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
-            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11010110,
+            (byte) 0b11010110, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
+            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b01101011,
 
-            (byte) 0b01101011, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
-            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11010110,
+            (byte) 0b11010110, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
+            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b01101011,
 
-            (byte) 0b01101011, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
-            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11010110,
+            (byte) 0b11010110, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
+            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b01101011,
 
-            (byte) 0b01101011, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
-            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11010110,
+            (byte) 0b11010110, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
+            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b01101011,
 
-            (byte) 0b01101011, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
-            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11010110,
+            (byte) 0b11010110, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111,
+            (byte) 0b11111111, (byte) 0b11111111, (byte) 0b11111111, (byte) 0b01101011,
 
-            (byte) 0b01101000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000,
-            (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11010000
+            (byte) 0b00010110, (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00011111,
+            (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00001011
     };
     private final int[] compAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
-
-    private final String boardString = """
-            0b
-            00000000
-            00000000
-            00010000
-            00100000
-            00000100
-            00001000
-            00000000
-            00000000L
-    """;
-
-    private final String boardOppString = """
-            0b
-            11111111
-            11111111
-            11111111
-            11100111
-            11100111
-            11111111
-            11111111
-            11111111L
-    """;
 
     /**
      * Standard board setup

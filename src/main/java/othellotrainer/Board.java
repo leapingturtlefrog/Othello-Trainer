@@ -16,7 +16,7 @@ public class Board {
     private int activePlayer; // 0 = Black, 1 = White
     private int[] score; // {Black score, White score}
     private int move; // Current move number
-    private boolean gameOver = false;
+    private boolean gameOver;
 
     private int pos; // Used for calculations
     private final Random random;
@@ -48,7 +48,7 @@ public class Board {
             (byte) 0b01101000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000,
             (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11010000
     };
-    private final int[] compAddList = {-9, -8, -7, -1, 1, 7, 8, 9};
+    private final int[] compAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
 
     private final String boardString = """
             0b
@@ -86,6 +86,7 @@ public class Board {
         activePlayer = 0;
         score = new int[]{2, 2};
         move = 0;
+        gameOver = false;
 
         random = new Random();
     }
@@ -149,7 +150,7 @@ public class Board {
                 output.append("\n").append(i / 8 + 1).append(" |");
             }
             if ((squares[2] & (1L << i)) != 0) {
-                output.append(" |");
+                output.append(" . |");
             } else if ((squares[0] & (1L << i)) != 0) {
                 output.append(" B |");
             } else {
@@ -208,19 +209,19 @@ public class Board {
         long tempDisksToFlip;
         long disksToFlip = 0L;
 
-        if ((squares[2] & (1L << pos)) == 0) {
-            for (int i = 7; i > -1; i--) {
+        if ((squares[2] & (1L << pos)) != 0) {
+            for (int i = 0; i < 8; i++) {
                 tempDisksToFlip = 0L;
                 compPos = pos + compAddList[i];
 
                 while ((validNextSquares[compPos] & (1L << i)) != 0) {
                     if ((squares[2] & (1L << compPos)) != 0) { // Square is empty
                         break;
-                    } else if ((squares[player] & (1L << i)) != 0) { // Current player is on square
+                    } else if ((squares[player] & (1L << compPos)) != 0) { // Current player is on square
                         disksToFlip += tempDisksToFlip;
                         break;
                     } else { // Opponent is on square
-                        tempDisksToFlip |= 1L << i;
+                        tempDisksToFlip |= 1L << compPos;
                     }
 
                     compPos += compAddList[i];
@@ -237,15 +238,15 @@ public class Board {
         int compPos;
         boolean opponentSeen; // Does the opponent have disks on the path being examined?
 
-        if ((squares[2] & (1L << pos)) == 0) {
-            for (int i = 7; i > -1; i--) {
+        if ((squares[2] & (1L << pos)) != 0) {
+            for (int i = 0; i < 8; i++) {
                 compPos = pos + compAddList[i];
                 opponentSeen = false;
 
                 while ((validNextSquares[compPos] & (1L << i)) != 0) {
                     if ((squares[2] & (1L << compPos)) != 0) { // Square is empty
                         break;
-                    } else if ((squares[player] & (1L << i)) != 0) { // Current player is on square
+                    } else if ((squares[player] & (1L << compPos)) != 0) { // Current player is on square
                         if (opponentSeen) {
                             return true;
                         } else {

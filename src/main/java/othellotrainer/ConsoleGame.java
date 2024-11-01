@@ -53,7 +53,7 @@ public class ConsoleGame {
                 } else {
                     try {
                         colInt = (int) inputString.charAt(0) - 97;
-                        rowInt = Integer.parseInt(inputString.substring(1, 2)) - 1;
+                        rowInt = (int) inputString.charAt(1) - 49;
                         if (colInt > -1 && colInt < 8 && rowInt > -1 && rowInt < 8) {
                             if (!mainBoard.move(mainBoard.getActivePlayer(), rowInt * 8 + colInt)) {
                                 System.out.println("Square " + inputString + " is not a valid move.");
@@ -77,7 +77,7 @@ public class ConsoleGame {
                     } else {
                         System.out.println("Draw.");
                     }
-                    System.out.println("\nThank you for playing! Enter any key to continue. Enter 'exit' to exit.");
+                    System.out.println("\nThank you for playing! Enter any key to continue or enter 'exit' to exit.");
                     if (!input.nextLine().strip().equalsIgnoreCase("exit")) {
                         mainBoard = new Board();
                     } else {

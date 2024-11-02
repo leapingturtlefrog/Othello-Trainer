@@ -40,7 +40,11 @@ public class ConsoleGameAuto {
                 + timeDifference * RUNS_PER_UPDATE / repetitions + "\n");
 
         try (FileWriter fileWriter = new FileWriter(DATA_FILE_PATH, true)) {
-            fileWriter.write(VERSION + "," + repetitions + "," + timeDifference + "," + RUNS_PER_UPDATE + "\n");
+            fileWriter.write(VERSION + ","
+                    + timeDifference * 1000 / repetitions + ","
+                    + repetitions + ","
+                    + timeDifference + ","
+                    + RUNS_PER_UPDATE + "\n");
             System.out.println("Successfully appended to data file.");
         } catch (IOException e) {
             System.out.println("Could not append to data file: " + e.getMessage());

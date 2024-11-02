@@ -1,112 +1,49 @@
 package othellotrainer;
 
-import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
 
-public class ConsoleGame {
-    Board mainBoard;
-    Scanner input;
+public class ConsoleGameAuto {
+    private Board mainBoard;
+    private final int repetitions;
+    private long startTime;
+    private long endTime;
 
-    ConsoleGame(Board board) {
+    private static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
+    private static final String DATA_FILE_PATH = "./data/performanceTimes.csv";
+    private static final String VERSION = "0.1.11-11.1.24-10:49";
+
+    ConsoleGameAuto(Board board, int totalRuns) {
         mainBoard = board;
-        input = new Scanner(System.in);
+        repetitions = totalRuns;
     }
 
     void run() {
-        outer:
-        while (true) {
-            System.out.print(getIntroText() + mainBoard.getBoardInConsoleString() + "\nInput square: ");
+        System.out.println("Press Ctrl+C to exit early. Showing stats every " + RUNS_PER_UPDATE + " games.");
+        startTime = System.currentTimeMillis();
 
-            String inputString = input.nextLine().trim().strip().toLowerCase();
-            while (true) {
-                System.out.println("You entered:" + inputString + ":");
-                if (inputString.startsWith("exit")) {
-                    break outer;
-                } else if (inputString.startsWith("forceprintboard")) {
-                    System.out.println(mainBoard.getBoardInConsoleString());
-                } else if (inputString.startsWith("r")) {
-                    if (inputString.length() == 1) {
-                        mainBoard.makeRandomMove(mainBoard.getActivePlayer());
-                        System.out.println(mainBoard.getBoardInConsoleString());
-                    } else {
-                        try {
-                            int repeats = Integer.parseInt(inputString.substring(1));
-                            if (repeats > 0) {
-                                for (int i = 0; i < repeats; i++) {
-                                    if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
-                                        break;
-                                    }
-                                }
-                                System.out.println(mainBoard.getBoardInConsoleString());
-                            } else {
-                                throw new Exception();
-                            }
-                        } catch (Exception e) {
-                            System.out.println("If you are doing a random move. The format to enter is either 'r' for one "
-                                    + "random move or 'r' followed immediately by a number of how many times to "
-                                    + "repeat. To complete an entire game, input 'r60', for example (as there are "
-                                    + "at most 60 moves in a game.");
-                        }
-                    }
-                } else if (inputString.length() != 2) {
-                    printInvalidInput("A");
-                } else {
-                    try {
-                        int colInt = (int) inputString.charAt(0) - 97;
-                        int rowInt = (int) inputString.charAt(1) - 49;
-                        if (colInt > -1 && colInt < 8 && rowInt > -1 && rowInt < 8) {
-                            if (!mainBoard.move(mainBoard.getActivePlayer(), rowInt * 8 + colInt)) {
-                                System.out.println("Square " + inputString + " is not a valid move.");
-                            } else {
-                                System.out.println(mainBoard.getBoardInConsoleString());
-                            }
-                        } else {
-                            printInvalidInput("B");
-                        }
-                    } catch (Exception e) {
-                        printInvalidInput("C");
-                    }
-                }
-
-                if (mainBoard.isGameOver()) {
-                    System.out.println("Game ended! Final score: " + mainBoard.getBlackScore() + " to "
-                            + mainBoard.getWhiteScore() + "\n" + mainBoard.getWinnerString()
-                            + "\nThank you for playing! Enter any key to continue or enter 'exit' to exit.");
-                    if (!input.nextLine().strip().equalsIgnoreCase("exit")) {
-                        mainBoard = new Board();
-                        break;
-                    } else {
-                        break outer;
-                    }
-                }
-                System.out.print("Input square: ");
-                inputString = input.nextLine().strip().toLowerCase();
+        for (int runsCompleted = 0; runsCompleted < repetitions; runsCompleted++) {
+            if (runsCompleted % RUNS_PER_UPDATE == 0) {
+                System.out.println("Runs completed: " + runsCompleted);
             }
+            for (int i = 0; i < 60; i++) {
+                if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
+                    break;
+                }
+            } mainBoard = new Board();
         }
-        System.out.println("Exited.");
-    }
 
-    String getIntroText() {
-        return """
-                Game started in console! Human vs human currently supported.
-                
-                      Layout:
-                      B: Black disk
-                      W: White disk
-                      .: Blank Square
-                
-                      Controls:
-                      When prompted, input a valid square through a lowercase letter and then a number with no spaces (ie. 'a4').
-                      Or enter 'r' for a random selection.
-                
-                      Input 'exit' or press the 'x' in the top right of the console to close.
-                
-                      Have fun!
-                
-                """;
-    }
+        endTime = System.currentTimeMillis();
+        double timeDifference = endTime - startTime;
+        System.out.println("---\nFinished. " + repetitions + " total runs completed." + "\n---\nTotal time (ms): "
+                + timeDifference + "\nTime per " + RUNS_PER_UPDATE + " runs (ms): "
+                + timeDifference * RUNS_PER_UPDATE / repetitions + "\n");
 
-    void printInvalidInput(String errorCode) {
-        System.out.println("Invalid input. Must be a letter a through h followed by a number 1 through 8, "
-                + "inclusive. For example: 'h8'. Error code: " + errorCode + ".");
+        try (FileWriter fileWriter = new FileWriter(DATA_FILE_PATH, true)) {
+            fileWriter.write(VERSION + "," + repetitions + "," + timeDifference + "," + RUNS_PER_UPDATE + "\n");
+            System.out.println("Successfully appended to data file.");
+        } catch (IOException e) {
+            System.out.println("Could not append to data file: " + e.getMessage());
+        }
     }
 }

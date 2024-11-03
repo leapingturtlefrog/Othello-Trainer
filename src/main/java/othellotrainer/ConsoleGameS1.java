@@ -7,11 +7,13 @@ import java.util.ArrayList;
 public class ConsoleGameS1 extends ConsoleGameAuto {
     protected BoardS1 mainBoard;
     protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v1.csv";
-    protected static final String VERSION = "0.1.13";
+    protected static final String VERSION = "0.1.14";
     protected int wins;
     protected long totalScore;
+    protected int draws;
     protected ArrayList<Integer> winsList;
     protected ArrayList<Long> scoreList;
+    protected ArrayList<Integer> drawsList;
 
     ConsoleGameS1(BoardS1 board, int totalRuns) {
         super();
@@ -22,9 +24,11 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
             throw new Error("Total runs / RUNS_PER_UPDATE must be less than 60.");
         }
         wins = 0;
+        draws = 0;
         totalScore = 0;
         winsList = new ArrayList<>(batchRepetitions);
         scoreList = new ArrayList<>(batchRepetitions);
+        drawsList = new ArrayList<>(batchRepetitions);
     }
 
     @Override
@@ -35,11 +39,13 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
         int scoreDifference;
         int tempWins;
         long tempScore;
+        int tempDraws;
         startTime = System.currentTimeMillis();
 
         for (runsCompleted = 0; runsCompleted < batchRepetitions; runsCompleted++) {
             tempWins = 0;
             tempScore = 0;
+            tempDraws = 0;
             scoreDifference = 0;
             for (batchedRuns = 0; batchedRuns < RUNS_PER_UPDATE; batchedRuns++) {
                 for (int i = 0; i < runsCompleted; i++) {
@@ -58,13 +64,16 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
                 scoreDifference = mainBoard.getScore(playerMovedFor) - mainBoard.getScore(opponent);
                 tempWins += scoreDifference > 0 ? 1 : 0;
                 tempScore += scoreDifference;
+                tempDraws += scoreDifference == 0 ? 1 : 0;
 
                 mainBoard = new BoardS1();
             }
             winsList.add(tempWins);
             scoreList.add(tempScore);
+            drawsList.add(tempDraws);
             wins += tempWins;
             totalScore += tempScore;
+            draws += tempDraws;
             System.out.println("Runs completed: " + (runsCompleted + 1) * RUNS_PER_UPDATE + "   Wins: " + tempWins
                     + "   Score Difference: " + tempScore);
         }
@@ -77,12 +86,22 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
 
         try (FileWriter fileWriter = new FileWriter(DATA_FILE_PATH, true)) {
             String data = VERSION + ","
-                    + wins + "."
+                    + ((double) (wins + draws) / repetitions) + ","
+                    + ((double) (wins + 0.5 * draws) / repetitions) + ","
                     + totalScore + ","
+                    + wins + ","
+                    + draws + ","
+                    + (repetitions - wins - draws) + ","
                     + timeDifference * 1000 / repetitions + ","
                     + repetitions + ","
                     + timeDifference + ","
                     + RUNS_PER_UPDATE;
+            for (int m = 0; m < batchRepetitions; m++) {
+                data += "," + (winsList.get(m) + drawsList.get(m));
+            }
+            for (int m = 0; m < 60 - batchRepetitions; m++) {
+                data += ",";
+            }
             for (int win : winsList) {
                 data += "," + win;
             }

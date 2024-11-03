@@ -22,7 +22,7 @@ if [ $# -eq 1 ]; then
         || echo -e "\nScript unsuccessful"
     elif [ ${#branch_name} -gt 0 ]; then
         git add . \
-        && git commit -m "$1" \
+        && git commit -m "$branch_name: $1" \
         && git switch -C draft \
         && git pull origin draft \
         && git merge "$branch_name" --no-edit \

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class ConsoleGameS1 extends ConsoleGameAuto {
     protected BoardS1 mainBoard;
     protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v1.csv";
+    protected static final String VERSION = "0.1.13";
     protected int wins;
     protected long totalScore;
     protected ArrayList<Integer> winsList;

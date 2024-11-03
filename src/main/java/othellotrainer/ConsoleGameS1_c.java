@@ -3,23 +3,26 @@ package othellotrainer;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class ConsoleGameS1 extends ConsoleGameAuto {
+public class ConsoleGameS1_c extends ConsoleGameAuto {
     protected BoardS1 mainBoard;
     protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v1.csv";
-    protected static final String VERSION = "0.1.14";
+    protected static final String VERSION = "0.1.16";
     protected int wins;
     protected long totalScore;
     protected int draws;
     protected ArrayList<Integer> winsList;
     protected ArrayList<Long> scoreList;
     protected ArrayList<Integer> drawsList;
-    protected static final int RUNS_PER_UPDATE = 5000; // How often stats should be displayed, every _ games
+    protected static final int totalRuns_o = 59000;
+    protected static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
+    protected Random random;
 
-    ConsoleGameS1(BoardS1 board, int totalRuns) {
+    ConsoleGameS1_c(BoardS1 board, int totalRuns) {
         super();
         mainBoard = board;
-        repetitions = totalRuns;
+        repetitions = totalRuns_o; //totalRuns;
         batchRepetitions = repetitions / RUNS_PER_UPDATE;
         if (batchRepetitions > 59) {
             throw new Error("Total runs / RUNS_PER_UPDATE must be less than 60.");
@@ -30,12 +33,13 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
         winsList = new ArrayList<>(batchRepetitions);
         scoreList = new ArrayList<>(batchRepetitions);
         drawsList = new ArrayList<>(batchRepetitions);
+        random = new Random();
     }
 
     @Override
     void run() {
         System.out.println("Press Ctrl+C to exit early. Showing updates every " + RUNS_PER_UPDATE + " games.");
-        int playerMovedFor;
+        int player;
         int opponent;
         int scoreDifference;
         int tempWins;
@@ -49,20 +53,16 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
             tempDraws = 0;
             scoreDifference = 0;
             for (batchedRuns = 0; batchedRuns < RUNS_PER_UPDATE; batchedRuns++) {
-                for (int i = 0; i < runsCompleted; i++) {
-                    if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
+                player = random.nextInt(2);
+                opponent = player == 0 ? 1 : 0;
+                for (int i = 0; i < 60; i++) {
+                    if (mainBoard.getActivePlayer() == player) {
+                        mainBoard.moveS1(player);
+                    } else if (!mainBoard.makeRandomMove(opponent)) {
                         break;
                     }
                 }
-                playerMovedFor = mainBoard.getActivePlayer();
-                opponent = playerMovedFor == 0 ? 1 : 0;
-                mainBoard.moveS1(playerMovedFor);
-                for (int j = 0; j < 60 - runsCompleted; j++) {
-                    if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
-                        break;
-                    }
-                }
-                scoreDifference = mainBoard.getScore(playerMovedFor) - mainBoard.getScore(opponent);
+                scoreDifference = mainBoard.getScore(player) - mainBoard.getScore(opponent);
                 tempWins += scoreDifference > 0 ? 1 : 0;
                 tempScore += scoreDifference;
                 tempDraws += scoreDifference == 0 ? 1 : 0;

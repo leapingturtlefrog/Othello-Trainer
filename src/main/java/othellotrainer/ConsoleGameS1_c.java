@@ -37,7 +37,7 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
     }
 
     @Override
-    void run() {
+    void run() throws CloneNotSupportedException {
         System.out.println("Press Ctrl+C to exit early. Showing updates every " + RUNS_PER_UPDATE + " games.");
         int player;
         int opponent;
@@ -57,8 +57,9 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
                 opponent = player == 0 ? 1 : 0;
                 for (int i = 0; i < 60; i++) {
                     if (mainBoard.getActivePlayer() == player) {
-                        mainBoard.moveS1(player);
+                        mainBoard.moveS1(player, mainBoard);
                     } else if (!mainBoard.makeRandomMove(opponent)) {
+                        System.out.println(i);
                         break;
                     }
                 }

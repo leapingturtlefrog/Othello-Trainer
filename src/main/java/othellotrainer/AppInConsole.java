@@ -6,9 +6,9 @@ package othellotrainer;
  */
 public class AppInConsole {
     protected static int RUNS = 1;
-    public static void main( String[] args ) {
+    public static void main( String[] args ) throws CloneNotSupportedException {
         for (int i = 0; i < RUNS; i++) {
-            ConsoleGameS1_c consoleGameS1_c = new ConsoleGameS1_c(new BoardS1(), 59000);
+            ConsoleGameS1 consoleGameS1_c = new ConsoleGameS1(new BoardS1(), 59000);
             consoleGameS1_c.run();
         }
         /*

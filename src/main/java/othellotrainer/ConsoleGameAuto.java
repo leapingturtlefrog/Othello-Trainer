@@ -24,7 +24,7 @@ public class ConsoleGameAuto {
         batchRepetitions = repetitions / RUNS_PER_UPDATE;
     }
 
-    void run() {
+    void run() throws CloneNotSupportedException {
         System.out.println("Press Ctrl+C to exit early. Showing updates every " + RUNS_PER_UPDATE + " games.");
         startTime = System.currentTimeMillis();
 
@@ -32,6 +32,7 @@ public class ConsoleGameAuto {
             for (batchedRuns = 0; batchedRuns < RUNS_PER_UPDATE; batchedRuns++) {
                 for (int i = 0; i < 60; i++) {
                     if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
+                        //System.out.println(i);
                         break;
                     }
                 }

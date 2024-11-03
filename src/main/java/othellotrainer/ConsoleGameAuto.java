@@ -4,23 +4,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ConsoleGameAuto {
-    private Board mainBoard;
-    private final int repetitions;
-    private int batchRepetitions;
-    private int runsCompleted;
-    private int batchedRuns;
-    private long startTime;
-    private long endTime;
+    protected Board mainBoard;
+    protected int repetitions;
+    protected int batchRepetitions;
+    protected int runsCompleted;
+    protected int batchedRuns;
+    protected long startTime;
+    protected long endTime;
 
-    private static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
-    private static final String DATA_FILE_PATH = "../../resources/othellotrainer/data/performanceTimes.csv";
-    private static final String VERSION = "0.1.12-11.2.24-11:52";
+    protected static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
+    protected static final String DATA_FILE_PATH = "../../../../data/performanceTimes.csv";
+    protected static final String VERSION = "0.1.12-11.2.24-11:52";
+
+    ConsoleGameAuto() { }
 
     ConsoleGameAuto(Board board, int totalRuns) {
         mainBoard = board;
         repetitions = totalRuns;
         batchRepetitions = repetitions / RUNS_PER_UPDATE;
-        System.out.println(batchRepetitions);
     }
 
     void run() {

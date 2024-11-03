@@ -9,20 +9,20 @@ import java.util.Random;
 public class Board {
     // In bits: 0 = not present, 1 = present. For empty squares this means 0 = occupied, 1 = empty
     // [Black squares, White squares, empty squares]
-    private long[] squares;
+    protected long[] squares;
     // The squares that disks can be places on for the active player
-    private long moveableSquares;
+    protected long moveableSquares;
 
-    private int activePlayer; // 0 = Black, 1 = White
-    private int[] score; // {Black score, White score}
-    private int move; // Current move number
-    private boolean gameOver;
+    protected int activePlayer; // 0 = Black, 1 = White
+    protected int[] score; // {Black score, White score}
+    protected int move; // Current move number
+    protected boolean gameOver;
 
-    private final Random random; // Used for making random moves
+    protected final Random random; // Used for making random moves
     // In bits: 0 = not valid, 1 = valid
     // For a given square, the "options" next to the square that are valid
     // Bit order (LSB to MSB): top left, top, top right, left, right, bottom left, bottom, bottom right
-    private final byte[] validNextSquares = new byte[]{
+    protected final byte[] validNextSquares = new byte[]{
             (byte) 0b11010000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000,
             (byte) 0b11111000, (byte) 0b11111000, (byte) 0b11111000, (byte) 0b01101000,
 
@@ -47,7 +47,7 @@ public class Board {
             (byte) 0b00010110, (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00011111,
             (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00011111, (byte) 0b00001011
     };
-    private final int[] compAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
+    protected final int[] compAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
 
     /**
      * Standard board setup
@@ -174,6 +174,20 @@ public class Board {
         }
     }
 
+    protected int getWinnerNumber() {
+        if (score[0] > score[1]) {
+            return 0;
+        } else if (score[1] > score[0]) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    protected int getScore(int player) {
+        return score[player];
+    }
+
     public boolean isGameOver() { return gameOver; }
 
     public int getActivePlayer() { return activePlayer; }
@@ -182,7 +196,7 @@ public class Board {
 
     public int getWhiteScore() { return score[1]; }
 
-    private long getDisksToFlip(int player, int pos) {
+    protected long getDisksToFlip(int player, int pos) {
         int currPos;
         int nextPos;
         long tempDisksToFlip;
@@ -215,7 +229,7 @@ public class Board {
         }
     }
 
-    private boolean canFlipDisks(int player, int pos) {
+    protected boolean canFlipDisks(int player, int pos) {
         int currPos;
         int nextPos;
         boolean opponentSeen; // Does the opponent have disks on the path being examined?
@@ -248,7 +262,7 @@ public class Board {
         return false;
     }
 
-    private long getMoveableSquares(int player) {
+    protected long getMoveableSquares(int player) {
         long moveableSquares = 0L;
 
         for (int i = 0; i < 64; i++) {

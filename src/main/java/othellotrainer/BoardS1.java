@@ -1,20 +1,22 @@
 package othellotrainer;
 
-import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
  *
  */
-public class BoardS1 extends Board implements Cloneable {
+public class BoardS1 extends Board {
     protected final int LOOK_AHEADS = 1;
     protected final int ITERATIONS_PER_LOOK_AHEAD = 100;
+    protected long[] savedSquares;
+    protected int[] savedScore;
 
-    public boolean moveS1(int player, BoardS1 board) throws CloneNotSupportedException {
+    public boolean moveS1(int player) {
+        save();
         long moveableSquaresTemp = getMoveableSquares(player);
         int opponent = player == 0 ? 1 : 0;
-        BoardS1 b;
 
         if (moveableSquaresTemp == 0) {
             return false;
@@ -28,15 +30,16 @@ public class BoardS1 extends Board implements Cloneable {
                 if ((moveableSquaresTemp & (1L << i)) != 0) {
                     moveableSquaresList.add(i);
                     totalPointsDifferenceList.add(0);
-                    b = (BoardS1) board.clone();
                     for (int iters = 0; iters < ITERATIONS_PER_LOOK_AHEAD; iters++) {
+                        save();
                         for (int j = 0; j < 61; j++) {
-                            if (!b.makeRandomMove(getActivePlayer())) {
+                            if (!makeRandomMove(getActivePlayer())) {
                                 totalPointsDifferenceList.set(idx,
-                                        totalPointsDifferenceList.get(idx) + b.score[player] - b.score[opponent]);
+                                        totalPointsDifferenceList.get(idx) + score[player] - score[opponent]);
                                 break;
                             }
                         }
+                        load();
                     }
                     if (totalPointsDifferenceList.get(idx) > totalPointsDifferenceList.get(highestDifferenceIndex)) {
                         highestDifferenceIndex = idx;
@@ -44,13 +47,18 @@ public class BoardS1 extends Board implements Cloneable {
                     idx++;
                 }
             }
-
+            load();
             return move(player, moveableSquaresList.get(highestDifferenceIndex));
         }
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public void save() {
+        savedSquares = Arrays.copyOf(squares, squares.length);
+        savedScore = Arrays.copyOf(score, score.length);
+    }
+
+    public void load() {
+        squares = Arrays.copyOf(savedSquares, savedSquares.length);
+        score = Arrays.copyOf(savedScore, savedScore.length);
     }
 }

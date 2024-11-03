@@ -23,7 +23,7 @@ if [ $# -eq 1 ]; then
     elif [ ${#branch_name} -gt 0 ]; then
         git add . \
         && git commit -m "$branch_name: $1" \
-        && git switch -C draft \
+        && git checkout draft \
         && git pull origin draft \
         && git merge "$branch_name" --no-edit \
         && git push -u origin draft \

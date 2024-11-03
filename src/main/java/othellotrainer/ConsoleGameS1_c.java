@@ -57,7 +57,7 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
                 opponent = player == 0 ? 1 : 0;
                 for (int i = 0; i < 60; i++) {
                     if (mainBoard.getActivePlayer() == player) {
-                        mainBoard.moveS1(player, mainBoard);
+                        mainBoard.moveS1(player);
                     } else if (!mainBoard.makeRandomMove(opponent)) {
                         System.out.println(i);
                         break;

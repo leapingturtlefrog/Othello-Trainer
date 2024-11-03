@@ -15,8 +15,8 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
     protected ArrayList<Integer> winsList;
     protected ArrayList<Long> scoreList;
     protected ArrayList<Integer> drawsList;
-    protected static final int totalRuns_o = 59000;
-    protected static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
+    protected static final int totalRuns_o = 59;
+    protected static final int RUNS_PER_UPDATE = 1; // How often stats should be displayed, every _ games
     protected Random random;
 
     ConsoleGameS1_c(BoardS1_1 board, int totalRuns) {
@@ -57,15 +57,18 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
                 for (int i = 0; i < 60; i++) {
                     if (mainBoard.getActivePlayer() == player) {
                         mainBoard.moveS1(player);
-                    } else if (!mainBoard.makeRandomMove(opponent)) {
+                    } else if (!mainBoard.makeRandomMove_print(opponent)) {
                         System.out.println(i);
                         break;
                     }
+                    //System.out.println(mainBoard.getBoardInConsoleString());
                 }
                 scoreDifference = mainBoard.getScore(player) - mainBoard.getScore(opponent);
                 tempWins += scoreDifference > 0 ? 1 : 0;
                 tempScore += scoreDifference;
                 tempDraws += scoreDifference == 0 ? 1 : 0;
+
+                System.out.println(" Playing as " + player + ". Win: " + (scoreDifference > 0));
 
                 mainBoard = new BoardS1_1();
             }
@@ -96,23 +99,24 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
                     + timeDifference * 1000 / repetitions + ","
                     + repetitions + ","
                     + timeDifference + ","
-                    + RUNS_PER_UPDATE;
+                    + RUNS_PER_UPDATE + ","
+                    + mainBoard.ITERATIONS_PER_LOOK_AHEAD;
             for (int m = 0; m < batchRepetitions; m++) {
                 data += "," + (winsList.get(m) + drawsList.get(m));
             }
-            for (int m = 0; m < 60 - batchRepetitions; m++) {
+            for (int m = 0; m < 59 - batchRepetitions; m++) {
                 data += ",";
             }
             for (int win : winsList) {
                 data += "," + win;
             }
-            for (int i = 0; i < 60 - batchRepetitions; i++) {
+            for (int i = 0; i < 59 - batchRepetitions; i++) {
                 data += ",";
             }
             for (long score : scoreList) {
                 data += "," + score;
             }
-            for (int i = 0; i < 60 - batchRepetitions; i++) {
+            for (int i = 0; i < 59 - batchRepetitions; i++) {
                 data += ",";
             }
             data += "\n";

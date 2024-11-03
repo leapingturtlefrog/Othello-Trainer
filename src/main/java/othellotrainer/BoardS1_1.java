@@ -51,7 +51,7 @@ public class BoardS1_1 {
     protected final int[] compAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
 
     protected final int LOOK_AHEADS = 1;
-    protected final int ITERATIONS_PER_LOOK_AHEAD = 10;
+    protected final int ITERATIONS_PER_LOOK_AHEAD = 10000;
     protected long[] savedSquares;
     protected int[] savedScore;
     protected int savedActivePlayer;
@@ -91,7 +91,9 @@ public class BoardS1_1 {
                     idx++;
                 }
             }
-            return move(player, moveableSquaresList.get(highestDifferenceIndex));
+            int pos = moveableSquaresList.get(highestDifferenceIndex);
+
+            return move_print(player, pos);
         }
     }
 
@@ -175,6 +177,56 @@ public class BoardS1_1 {
         }
     }
 
+    public boolean move_print(int player, int pos) {
+        int opponent = player ^ 1;
+        // Return opponent's disks that can be flipped based on current position
+        long disksToFlip = getDisksToFlip(player, pos);
+        int disksFlipped = 0;
+
+        if (disksToFlip == 0) { // If this is not a valid move
+            return false;
+        } else { // Valid move
+            // Update the player's squares, opponent's, and the empty squares
+            squares[player] |= disksToFlip | (1L << pos);
+            squares[opponent] ^= disksToFlip;
+            squares[2] ^= 1L << pos;
+
+            // Use Brain Kernighan's Algorithm to find the number of disks flipped
+            while (disksToFlip > 0) {
+                disksToFlip &= disksToFlip - 1;
+                disksFlipped++;
+            }
+
+            // Set new score and update move number
+            score[player] += disksFlipped + 1;
+            score[opponent] -= disksFlipped;
+            move++;
+
+            int col = (pos % 8) + 1;
+            String[] rows = new String[]{"a", "b", "c", "d", "e", "f", "g", "h"};
+            String row = rows[pos / 8];
+            System.out.print(row + col);
+
+            if (move == 60) {
+                gameOver = true;
+            } else {
+                // Update the moveable squares and active player
+                moveableSquares = getMoveableSquares(opponent);
+                if (moveableSquares != 0) {
+                    activePlayer = opponent;
+                } else {
+                    moveableSquares = getMoveableSquares(player);
+
+                    if (moveableSquares == 0) { // Neither player can move
+                        gameOver = true;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+
     public String getBoardInConsoleString() {
         StringBuilder output = new StringBuilder(387);
 
@@ -216,13 +268,28 @@ public class BoardS1_1 {
                     moveableSquaresList.add(i);
                 }
             }
+            int pos = moveableSquaresList.get(random.nextInt(moveableSquaresList.size()));
 
-            return move(
-                    player,
-                    moveableSquaresList.get(
-                            random.nextInt(moveableSquaresList.size())
-                    )
-            );
+            return move(player, pos);
+        }
+    }
+
+    public boolean makeRandomMove_print(int player) {
+        long moveableSquaresTemp = getMoveableSquares(player);
+
+        if (moveableSquaresTemp == 0) {
+            return false;
+        } else {
+            ArrayList<Integer> moveableSquaresList = new ArrayList<>();
+
+            for (int i = 0; i < 64; i++) {
+                if ((moveableSquaresTemp & (1L << i)) != 0) {
+                    moveableSquaresList.add(i);
+                }
+            }
+            int pos = moveableSquaresList.get(random.nextInt(moveableSquaresList.size()));
+
+            return move_print(player, pos);
         }
     }
 

@@ -6,31 +6,36 @@ import java.io.IOException;
 public class ConsoleGameAuto {
     private Board mainBoard;
     private final int repetitions;
+    private int batchRepetitions;
+    private int runsCompleted;
+    private int batchedRuns;
     private long startTime;
     private long endTime;
 
     private static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
-    private static final String DATA_FILE_PATH = "./data/performanceTimes.csv";
-    private static final String VERSION = "0.1.11-11.1.24-10:49";
+    private static final String DATA_FILE_PATH = "../../resources/othellotrainer/data/performanceTimes.csv";
+    private static final String VERSION = "0.1.12-11.2.24-11:52";
 
     ConsoleGameAuto(Board board, int totalRuns) {
         mainBoard = board;
         repetitions = totalRuns;
+        batchRepetitions = repetitions % RUNS_PER_UPDATE;
     }
 
     void run() {
         System.out.println("Press Ctrl+C to exit early. Showing stats every " + RUNS_PER_UPDATE + " games.");
         startTime = System.currentTimeMillis();
 
-        for (int runsCompleted = 0; runsCompleted < repetitions; runsCompleted++) {
-            if (runsCompleted % RUNS_PER_UPDATE == 0) {
-                System.out.println("Runs completed: " + runsCompleted);
-            }
-            for (int i = 0; i < 60; i++) {
-                if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
-                    break;
+        for (runsCompleted = 0; runsCompleted < batchRepetitions; runsCompleted++) {
+            for (batchedRuns = 0; batchedRuns < RUNS_PER_UPDATE; batchedRuns++) {
+                for (int i = 0; i < 60; i++) {
+                    if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
+                        break;
+                    }
                 }
-            } mainBoard = new Board();
+                mainBoard = new Board();
+            }
+            System.out.println("Runs completed: " + runsCompleted);
         }
 
         endTime = System.currentTimeMillis();

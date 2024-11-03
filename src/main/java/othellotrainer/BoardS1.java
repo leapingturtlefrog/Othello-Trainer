@@ -9,7 +9,7 @@ import java.util.Random;
  */
 public class BoardS1 extends Board {
     protected final int LOOK_AHEADS = 1;
-    protected final int ITERATIONS_PER_LOOK_AHEAD = 100;
+    protected final int ITERATIONS_PER_LOOK_AHEAD = 10;
     protected long[] savedSquares;
     protected int[] savedScore;
 

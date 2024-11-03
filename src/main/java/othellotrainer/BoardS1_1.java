@@ -1,15 +1,13 @@
 package othellotrainer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
  *
  */
-public class BoardS1_1 implements Cloneable {
-    protected final int LOOK_AHEADS = 1;
-    protected final int ITERATIONS_PER_LOOK_AHEAD = 100;
-
+public class BoardS1_1 {
     // In bits: 0 = not present, 1 = present. For empty squares this means 0 = occupied, 1 = empty
     // [Black squares, White squares, empty squares]
     protected long[] squares;
@@ -52,10 +50,15 @@ public class BoardS1_1 implements Cloneable {
     };
     protected final int[] compAddList = new int[]{-9, -8, -7, -1, 1, 7, 8, 9};
 
-    public boolean moveS1(int player) throws CloneNotSupportedException {
+    protected final int LOOK_AHEADS = 1;
+    protected final int ITERATIONS_PER_LOOK_AHEAD = 10;
+    protected long[] savedSquares;
+    protected int[] savedScore;
+
+    public boolean moveS1(int player) {
+        save();
         long moveableSquaresTemp = getMoveableSquares(player);
         int opponent = player == 0 ? 1 : 0;
-        BoardS1 b;
 
         if (moveableSquaresTemp == 0) {
             return false;
@@ -69,15 +72,16 @@ public class BoardS1_1 implements Cloneable {
                 if ((moveableSquaresTemp & (1L << i)) != 0) {
                     moveableSquaresList.add(i);
                     totalPointsDifferenceList.add(0);
-                    b = (BoardS1) this.clone();
                     for (int iters = 0; iters < ITERATIONS_PER_LOOK_AHEAD; iters++) {
+                        save();
                         for (int j = 0; j < 61; j++) {
-                            if (!b.makeRandomMove(getActivePlayer())) {
+                            if (!makeRandomMove(getActivePlayer())) {
                                 totalPointsDifferenceList.set(idx,
-                                        totalPointsDifferenceList.get(idx) + b.score[player] - b.score[opponent]);
+                                        totalPointsDifferenceList.get(idx) + score[player] - score[opponent]);
                                 break;
                             }
                         }
+                        load();
                     }
                     if (totalPointsDifferenceList.get(idx) > totalPointsDifferenceList.get(highestDifferenceIndex)) {
                         highestDifferenceIndex = idx;
@@ -85,14 +89,19 @@ public class BoardS1_1 implements Cloneable {
                     idx++;
                 }
             }
-
+            load();
             return move(player, moveableSquaresList.get(highestDifferenceIndex));
         }
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public void save() {
+        savedSquares = Arrays.copyOf(squares, squares.length);
+        savedScore = Arrays.copyOf(score, score.length);
+    }
+
+    public void load() {
+        squares = Arrays.copyOf(savedSquares, savedSquares.length);
+        score = Arrays.copyOf(savedScore, savedScore.length);
     }
 
     /**
@@ -119,7 +128,7 @@ public class BoardS1_1 implements Cloneable {
         // Return opponent's disks that can be flipped based on current position
         long disksToFlip = getDisksToFlip(player, pos);
         int disksFlipped = 0;
-        
+
         if (disksToFlip == 0) { // If this is not a valid move
             return false;
         } else { // Valid move
@@ -133,7 +142,7 @@ public class BoardS1_1 implements Cloneable {
                 disksToFlip &= disksToFlip - 1;
                 disksFlipped++;
             }
-            
+
             // Set new score and update move number
             score[player] += disksFlipped + 1;
             score[opponent] -= disksFlipped;
@@ -167,7 +176,7 @@ public class BoardS1_1 implements Cloneable {
                         Score:  %-2d      %-2d        Move:  %-2d
                         
                             a   b   c   d   e   f   g   h""")
-                        .formatted(getActivePlayer() == 0 ? "B" : "W", score[0], score[1], move));
+                .formatted(getActivePlayer() == 0 ? "B" : "W", score[0], score[1], move));
 
         for (int i = 0; i < 64; i++) {
             // Row text

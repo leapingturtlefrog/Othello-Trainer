@@ -8,7 +8,7 @@ import java.util.Random;
 public class ConsoleGameS1_c extends ConsoleGameAuto {
     protected BoardS1 mainBoard;
     protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v1.csv";
-    protected static final String VERSION = "0.1.16";
+    protected static final String VERSION = "0.1.20";
     protected int wins;
     protected long totalScore;
     protected int draws;

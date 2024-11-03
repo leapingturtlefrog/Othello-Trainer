@@ -19,11 +19,12 @@ public class ConsoleGameAuto {
     ConsoleGameAuto(Board board, int totalRuns) {
         mainBoard = board;
         repetitions = totalRuns;
-        batchRepetitions = repetitions % RUNS_PER_UPDATE;
+        batchRepetitions = repetitions / RUNS_PER_UPDATE;
+        System.out.println(batchRepetitions);
     }
 
     void run() {
-        System.out.println("Press Ctrl+C to exit early. Showing stats every " + RUNS_PER_UPDATE + " games.");
+        System.out.println("Press Ctrl+C to exit early. Showing updates every " + RUNS_PER_UPDATE + " games.");
         startTime = System.currentTimeMillis();
 
         for (runsCompleted = 0; runsCompleted < batchRepetitions; runsCompleted++) {
@@ -35,7 +36,7 @@ public class ConsoleGameAuto {
                 }
                 mainBoard = new Board();
             }
-            System.out.println("Runs completed: " + runsCompleted);
+            System.out.println("Runs completed: " + (runsCompleted + 1) * RUNS_PER_UPDATE);
         }
 
         endTime = System.currentTimeMillis();

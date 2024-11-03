@@ -14,7 +14,7 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
     protected ArrayList<Integer> winsList;
     protected ArrayList<Long> scoreList;
     protected ArrayList<Integer> drawsList;
-    protected static final int RUNS_PER_UPDATE = 5000; // How often stats should be displayed, every _ games
+    protected static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
 
     ConsoleGameS1(BoardS1 board, int totalRuns) {
         super();
@@ -56,10 +56,10 @@ public class ConsoleGameS1 extends ConsoleGameAuto {
                 }
                 playerMovedFor = mainBoard.getActivePlayer();
                 opponent = playerMovedFor == 0 ? 1 : 0;
-                //System.out.println(mainBoard.moveS1(playerMovedFor));
-                for (int j = 0; j < 60 - runsCompleted; j++) {
+                mainBoard.moveS1(playerMovedFor);
+                for (int j = 0; j < 60 - runsCompleted - 1; j++) {
                     if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
-                        //System.out.println(j);
+                        System.out.println(j);
                         break;
                     }
                 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ConsoleGameS1_c extends ConsoleGameAuto {
-    protected BoardS1 mainBoard;
+    protected BoardS1_1 mainBoard;
     protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v1.csv";
     protected static final String VERSION = "0.1.20";
     protected int wins;
@@ -19,7 +19,7 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
     protected static final int RUNS_PER_UPDATE = 1000; // How often stats should be displayed, every _ games
     protected Random random;
 
-    ConsoleGameS1_c(BoardS1 board, int totalRuns) {
+    ConsoleGameS1_c(BoardS1_1 board, int totalRuns) {
         super();
         mainBoard = board;
         repetitions = totalRuns_o; //totalRuns;
@@ -67,7 +67,7 @@ public class ConsoleGameS1_c extends ConsoleGameAuto {
                 tempScore += scoreDifference;
                 tempDraws += scoreDifference == 0 ? 1 : 0;
 
-                mainBoard = new BoardS1();
+                mainBoard = new BoardS1_1();
             }
             winsList.add(tempWins);
             scoreList.add(tempScore);

@@ -54,6 +54,9 @@ public class BoardS1_1 {
     protected final int ITERATIONS_PER_LOOK_AHEAD = 10;
     protected long[] savedSquares;
     protected int[] savedScore;
+    protected int savedActivePlayer;
+    protected int savedMove;
+    protected boolean savedGameOver;
 
     public boolean moveS1(int player) {
         save();
@@ -73,7 +76,6 @@ public class BoardS1_1 {
                     moveableSquaresList.add(i);
                     totalPointsDifferenceList.add(0);
                     for (int iters = 0; iters < ITERATIONS_PER_LOOK_AHEAD; iters++) {
-                        save();
                         for (int j = 0; j < 61; j++) {
                             if (!makeRandomMove(getActivePlayer())) {
                                 totalPointsDifferenceList.set(idx,
@@ -89,7 +91,6 @@ public class BoardS1_1 {
                     idx++;
                 }
             }
-            load();
             return move(player, moveableSquaresList.get(highestDifferenceIndex));
         }
     }
@@ -97,11 +98,17 @@ public class BoardS1_1 {
     public void save() {
         savedSquares = Arrays.copyOf(squares, squares.length);
         savedScore = Arrays.copyOf(score, score.length);
+        savedActivePlayer = activePlayer;
+        savedMove = move;
+        savedGameOver = gameOver;
     }
 
     public void load() {
         squares = Arrays.copyOf(savedSquares, savedSquares.length);
         score = Arrays.copyOf(savedScore, savedScore.length);
+        activePlayer = savedActivePlayer;
+        move = savedMove;
+        gameOver = savedGameOver;
     }
 
     /**

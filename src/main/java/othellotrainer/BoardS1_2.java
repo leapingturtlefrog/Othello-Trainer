@@ -7,7 +7,7 @@ import java.util.Random;
 /**
  *
  */
-public class BoardS1_1 {
+public class BoardS1_2 {
     // In bits: 0 = not present, 1 = present. For empty squares this means 0 = occupied, 1 = empty
     // [Black squares, White squares, empty squares]
     protected long[] squares;
@@ -66,32 +66,31 @@ public class BoardS1_1 {
         if (moveableSquaresTemp == 0) {
             return false;
         } else {
-            ArrayList<Integer> moveableSquaresList = new ArrayList<>();
-            ArrayList<Integer> totalPointsDifferenceList = new ArrayList<>();
+            int[] moveableSquaresList = new int[64];
+            int[] totalPointsDifferenceList = new int[64];
             int highestDifferenceIndex = 0;
             int idx = 0;
 
             for (int i = 0; i < 64; i++) {
                 if ((moveableSquaresTemp & (1L << i)) != 0) {
-                    moveableSquaresList.add(i);
-                    totalPointsDifferenceList.add(0);
+                    moveableSquaresList[idx] = i;
+                    totalPointsDifferenceList[idx] = 0;
                     for (int iters = 0; iters < ITERATIONS_PER_LOOK_AHEAD; iters++) {
                         for (int j = 0; j < 61; j++) {
                             if (!makeRandomMove(getActivePlayer())) {
-                                totalPointsDifferenceList.set(idx,
-                                        totalPointsDifferenceList.get(idx) + score[player] - score[opponent]);
+                                totalPointsDifferenceList[idx] += score[player] - score[opponent];
                                 break;
                             }
                         }
                         load();
                     }
-                    if (totalPointsDifferenceList.get(idx) > totalPointsDifferenceList.get(highestDifferenceIndex)) {
+                    if (totalPointsDifferenceList[idx] > totalPointsDifferenceList[highestDifferenceIndex]) {
                         highestDifferenceIndex = idx;
                     }
                     idx++;
                 }
             }
-            int pos = moveableSquaresList.get(highestDifferenceIndex);
+            int pos = moveableSquaresList[highestDifferenceIndex];
 
             return move_print(player, pos);
         }
@@ -116,7 +115,7 @@ public class BoardS1_1 {
     /**
      * Standard board setup
      */
-    public BoardS1_1() {
+    public BoardS1_2() {
         squares = new long[]{
                 0b0000000000000000000000000000100000010000000000000000000000000000L,
                 0b0000000000000000000000000001000000001000000000000000000000000000L,

@@ -9,7 +9,7 @@ public class AppInConsole {
     protected static ConsoleGameS1_t c;
     public static void main(String[] args) {
         for (int i = RUNS; i > -1; i--) {
-            c = new ConsoleGameS1_t(new BoardS1_2(), i);
+            c = new ConsoleGameS1_t(new BoardS1_2(), 60);
             c.run();
         }
         /*

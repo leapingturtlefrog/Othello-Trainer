@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class ConsoleGameS1_t extends ConsoleGameAuto {
     protected BoardS1_2 mainBoard;
-    protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v2_3.csv";
+    protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v2_rand_2.csv";
     protected static String VERSION;
     protected int wins;
     protected long totalScore;
@@ -59,13 +59,15 @@ public class ConsoleGameS1_t extends ConsoleGameAuto {
                 }
                 playerMovedFor = mainBoard.getActivePlayer();
                 opponent = playerMovedFor == 0 ? 1 : 0;
-                mainBoard.moveS1(playerMovedFor);
+                //mainBoard.moveS1(playerMovedFor);
                 for (int j = 0; j < 60; j++) {
                     if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
                         break;
                     }
                 }
-                scoreDifference = mainBoard.getScore(playerMovedFor) - mainBoard.getScore(opponent);
+                scoreDifference = mainBoard.getScore(0) - mainBoard.getScore(1); //mainBoard.getScore(playerMovedFor) -
+                // mainBoard.getScore
+                        // (opponent);
                 tempWins += scoreDifference > 0 ? 1 : 0;
                 tempScore += scoreDifference;
                 tempDraws += scoreDifference == 0 ? 1 : 0;

@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ConsoleGameS1_t extends ConsoleGameAuto {
-    protected BoardS1_2 mainBoard;
-    protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v2_rand_2.csv";
+    protected BoardS1_1 mainBoard;
+    protected static final String DATA_FILE_PATH = "../../../../data/performance_S_v2_rand_c1.csv";
     protected static String VERSION;
     protected int wins;
     protected long totalScore;
@@ -17,10 +17,10 @@ public class ConsoleGameS1_t extends ConsoleGameAuto {
     protected static final int RUNS_PER_UPDATE = 10000; // How often stats should be displayed, every _ games
     protected int preMoves;
 
-    ConsoleGameS1_t(BoardS1_2 board, int preMoves_) {
+    ConsoleGameS1_t(BoardS1_1 board, int preMoves_) {
         super();
         mainBoard = board;
-        repetitions = 10000; //totalRuns;
+        repetitions = 100000; //totalRuns;
         batchRepetitions = repetitions / RUNS_PER_UPDATE;
         if (batchRepetitions > 59) {
             throw new Error("Total runs / RUNS_PER_UPDATE must be less than 60.");
@@ -32,7 +32,7 @@ public class ConsoleGameS1_t extends ConsoleGameAuto {
         scoreList = new ArrayList<>(batchRepetitions);
         drawsList = new ArrayList<>(batchRepetitions);
         preMoves = preMoves_;
-        VERSION = "0.1.26-" + preMoves_;
+        VERSION = "0.1.27_2x_2";
     }
 
     @Override
@@ -52,16 +52,16 @@ public class ConsoleGameS1_t extends ConsoleGameAuto {
             tempDraws = 0;
             scoreDifference = 0;
             for (batchedRuns = 0; batchedRuns < RUNS_PER_UPDATE; batchedRuns++) {
-                for (int i = 0; i < preMoves; i++) {
-                    if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
+                for (int i = 0; i < 57; i++) {
+                    if (!mainBoard.makeRandomMove_2(mainBoard.getActivePlayer())) {
                         break;
                     }
                 }
                 playerMovedFor = mainBoard.getActivePlayer();
                 opponent = playerMovedFor == 0 ? 1 : 0;
-                //mainBoard.moveS1(playerMovedFor);
+                mainBoard.moveS1(playerMovedFor);
                 for (int j = 0; j < 60; j++) {
-                    if (!mainBoard.makeRandomMove(mainBoard.getActivePlayer())) {
+                    if (!mainBoard.makeRandomMove_2(mainBoard.getActivePlayer())) {
                         break;
                     }
                 }
@@ -72,7 +72,7 @@ public class ConsoleGameS1_t extends ConsoleGameAuto {
                 tempScore += scoreDifference;
                 tempDraws += scoreDifference == 0 ? 1 : 0;
 
-                mainBoard = new BoardS1_2();
+                mainBoard = new BoardS1_1();
             }
             winsList.add(tempWins);
             scoreList.add(tempScore);

@@ -3,6 +3,7 @@ package othellotrainer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.random.RandomGenerator;
 
 /**
  *
@@ -57,6 +58,7 @@ public class BoardS1_1 {
     protected int savedActivePlayer;
     protected int savedMove;
     protected boolean savedGameOver;
+    protected RandomGenerator randomGenerator;
 
     public boolean moveS1(int player) {
         save();
@@ -77,7 +79,7 @@ public class BoardS1_1 {
                     totalPointsDifferenceList.add(0);
                     for (int iters = 0; iters < ITERATIONS_PER_LOOK_AHEAD; iters++) {
                         for (int j = 0; j < 61; j++) {
-                            if (!makeRandomMove(getActivePlayer())) {
+                            if (!makeRandomMove_2(getActivePlayer())) {
                                 totalPointsDifferenceList.set(idx,
                                         totalPointsDifferenceList.get(idx) + score[player] - score[opponent]);
                                 break;
@@ -128,7 +130,7 @@ public class BoardS1_1 {
         score = new int[]{2, 2};
         move = 0;
         gameOver = false;
-
+        randomGenerator = RandomGenerator.of("Xoshiro256PlusPlus");
         random = new Random();
     }
 
@@ -270,6 +272,25 @@ public class BoardS1_1 {
                 }
             }
             int pos = moveableSquaresList.get(random.nextInt(moveableSquaresList.size()));
+
+            return move(player, pos);
+        }
+    }
+
+    public boolean makeRandomMove_2(int player) {
+        long moveableSquaresTemp = getMoveableSquares(player);
+
+        if (moveableSquaresTemp == 0) {
+            return false;
+        } else {
+            ArrayList<Integer> moveableSquaresList = new ArrayList<>();
+
+            for (int i = 0; i < 64; i++) {
+                if ((moveableSquaresTemp & (1L << i)) != 0) {
+                    moveableSquaresList.add(i);
+                }
+            }
+            int pos = moveableSquaresList.get(randomGenerator.nextInt(moveableSquaresList.size()));
 
             return move(player, pos);
         }
